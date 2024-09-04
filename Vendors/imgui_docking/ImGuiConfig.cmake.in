@@ -1,0 +1,4 @@
+@PACKAGE_INIT@
+
+include("${CMAKE_CURRENT_LIST_DIR}/ImGuiTargets.cmake)
+check_required_component(imgui_docking)
