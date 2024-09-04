@@ -72,7 +72,8 @@ BUILD_PATH = "build"                # The path to the build directory
 CONFIG_PATH = "build/config"        # The path to the config directory
 PREFIX_PATH = "build/packages"      # The path to the packages directory
 SUBMODULES_PATH = "Vendors"         # The path to the submodules directory
-SUBMODULES = [ "glfw", "spdlog", "glew-cmake", "imgui_docking" ]
+CMAKE_MODULES_PATH = "CMake"        # The path to the CMake modules directory
+SUBMODULES = [  "imgui_docking" ] #"glfw", "spdlog", "glew-cmake",
 
 def verify_submodules():
     """
@@ -168,6 +169,3 @@ for submodule in SUBMODULES:
     # The `--config {BUILD_TYPE}` option specifies the build type
     # The `--prefix {PREFIX_PATH}` option specifies the directory where the submodule will be installed
     cmd(f"cmake --install {CONFIG_PATH}/{submodule} --config {BUILD_TYPE} --prefix {PREFIX_PATH}")
-
-
-

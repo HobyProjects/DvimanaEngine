@@ -4,7 +4,8 @@
 cmake_minimum_required (VERSION 3.15)
 project(imgui_docking C CXX)
 
-find_package(glfw3 REQUIRED)
+find_package(glfw3 CONFIG REQUIRED)
+include_directories(BEFORE ${GLFW3_INCLUDE_DIRS})
 
 set(
     IMGUI_HEADERS
