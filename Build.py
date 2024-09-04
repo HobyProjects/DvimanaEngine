@@ -74,7 +74,7 @@ PREFIX_PATH = "build/packages"      # The path to the packages directory
 SUBMODULES_PATH = "Vendors"         # The path to the submodules directory
 
 
-SUBMODULES = [ "glfw" ]
+SUBMODULES = [ "glfw", "spdlog" ]
 
 def verify_submodules():
     """
@@ -114,7 +114,7 @@ if args.config != "Debug" and args.config != "Release":
 # Set the BUILD_TYPE variable if the build configuration was Release
 # -----------------------------------------------------------------
 if args.config == "Release":
-    BUILD_TYPE = args.config
+    BUILD_TYPE = "Release"
 else:
     BUILD_TYPE = "Debug"
 
@@ -142,6 +142,31 @@ CMAKE_CACHE_VARIABLES = f"""
 -DCMAKE_PREFIX_PATH={PREFIX_PATH}
 """.replace("\n", " ").replace("\t", " ")
 
+# Loop through each submodule and do the following:
+#  1. Generate the build files for the submodule
+#  2. Build the submodule
+#  3. Install the submodule
 for submodule in SUBMODULES:
+    # Step 1: Generate the build files for the submodule
+    # ---------------------------------------------------
+    # The `-S` option specifies the source directory of the submodule
+    # The `-B` option specifies the directory where the build files will be placed
+    # The `-DCMAKE_BUILD_TYPE` option specifies the build type
+    # The `-DCMAKE_INSTALL_PREFIX` option specifies the directory where the submodule will be installed
+    # The `-DCMAKE_PREFIX_PATH` option specifies the directory where the submodule and its dependencies will be installed
     cmd(f"cmake {CMAKE_CACHE_VARIABLES} -S {SUBMODULES_PATH}/{submodule} -B {CONFIG_PATH}/{submodule}")
+
+    # Step 2: Build the submodule
+    # --------------------------
+    # The `--build` option tells CMake to build the submodule
+    # The `{CONFIG_PATH}/{submodule}` argument specifies the directory where the build files are located
+    # The `--config {BUILD_TYPE}` option specifies the build type
     cmd(f"cmake --build {CONFIG_PATH}/{submodule} --config {BUILD_TYPE}")
+
+    # Step 3: Install the submodule
+    # ---------------------------
+    # The `--install` option tells CMake to install the submodule
+    # The `{CONFIG_PATH}/{submodule}` argument specifies the directory where the build files are located
+    # The `--config {BUILD_TYPE}` option specifies the build type
+    # The `--prefix {PREFIX_PATH}` option specifies the directory where the submodule will be installed
+    cmd(f"cmake --install {CONFIG_PATH}/{submodule} --config {BUILD_TYPE} --prefix {PREFIX_PATH}")
