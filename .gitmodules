@@ -11,3 +11,6 @@
 	path = Vendors/imgui_docking/imgui
 	url = https://github.com/ocornut/imgui.git
 	branch = docking
+[submodule "Vendors/stb_image/stb"]
+	path = Vendors/stb_image/stb
+	url = https://github.com/nothings/stb.git
