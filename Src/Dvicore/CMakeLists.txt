@@ -3,8 +3,13 @@ cmake_minimum_required(VERSION 3.15)
 include(GNUInstallDirs)
 include(CMakePackageConfigHelpers)
 
-set(DVICORE_VERSION "1.0.0")
-project(DviCore VERSION ${DVICORE_VERSION} LANGUAGES CXX C)
+find_package(libspdlog REQUIRED)
+find_package(glfw3 REQUIRED)
+find_package(EnTT REQUIRED)
+find_package(glew REQUIRED)
+
+project(DviCore 1.0.0 LANGUAGES CXX C)
+
 set(DVIMANA_CORE DviCore)
 set(DVICORE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/Src)
 
@@ -53,15 +58,13 @@ target_link_libraries(
 	${DVIMANA_CORE} 
 		PUBLIC
 			glfw
-			spdlog
+			spdlog::spdlog
 			libglew_static
-			glm
+			glm::glm
 			EnTT::EnTT
 )
 
 add_library(Dvimana::DviCore ALIAS ${DVIMANA_CORE})
-
-
 
 set_target_properties(
 	${DVIMANA_CORE} PROPERTIES
@@ -90,7 +93,7 @@ install(
 
 install(
 	FILES ${DVICORE_HEADERS}
-	DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
+	DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/Dvimana
 )
 
 install(

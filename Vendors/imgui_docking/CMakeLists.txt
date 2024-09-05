@@ -2,10 +2,11 @@
 ## IMGUI DOCKING LIBRARY ##
 ###########################
 cmake_minimum_required (VERSION 3.15)
-project(imgui_docking C CXX)
+project(ImGuiDocking C CXX)
 
-find_package(glfw3 CONFIG REQUIRED)
-include_directories(BEFORE ${GLFW3_INCLUDE_DIRS})
+find_package(glfw3 REQUIRED)
+find_package(OpenGL REQUIRED)
+set(IMGUI_DOCKING_LIBEARY ImGuiDocking)
 
 set(
     IMGUI_HEADERS
@@ -31,19 +32,18 @@ set(
 )
 
 add_library(
-	imgui_docking
+	${IMGUI_DOCKING_LIBEARY}
 		STATIC 
 			${IMGUI_HEADERS}
 			${IMGUI_SOURCES}
 )
 
-target_include_directories(imgui_docking PRIVATE imgui imgui/backends)
-target_link_libraries(imgui_docking PRIVATE glfw3)
-add_library(ImGui::ImGuiDocking ALIAS imgui_docking)
-
+target_include_directories(${IMGUI_DOCKING_LIBEARY} PRIVATE imgui imgui/backends)
+target_link_libraries(${IMGUI_DOCKING_LIBEARY} PRIVATE glfw OpenGL::GL)
+add_library(ImGui::ImGuiDocking ALIAS ${IMGUI_DOCKING_LIBEARY})
 
 set_target_properties(
-	imgui_docking PROPERTIES
+	${IMGUI_DOCKING_LIBEARY} PROPERTIES
 	CXX_STANDARD 20
 	CXX_STANDARD_REQUIRED ON
 	CXX_EXTENSIONS OFF
@@ -55,14 +55,14 @@ set_target_properties(
 include(GNUInstallDirs)
 
 target_include_directories(
-	imgui_docking PUBLIC
+	${IMGUI_DOCKING_LIBEARY} PUBLIC
 	$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
 	$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
 )
 
 install(
-	TARGETS imgui_docking
-	EXPORT ImGuiTargets
+	TARGETS ${IMGUI_DOCKING_LIBEARY}
+	EXPORT "${IMGUI_DOCKING_LIBEARY}Targets"
 	LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
 	ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
 	RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
@@ -71,25 +71,36 @@ install(
 
 install(
 	FILES ${IMGUI_HEADERS}
-	DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
+	DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/${IMGUI_DOCKING_LIBEARY}
 )
 
 install(
-	EXPORT ImGuiTargets
-	FILE ImGuiTargets.cmake
+	EXPORT "${IMGUI_DOCKING_LIBEARY}Targets"
+	FILE "${IMGUI_DOCKING_LIBEARY}Targets.cmake"
 	NAMESPACE ImGui::
-	DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/imgui_docking
+	DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/${IMGUI_DOCKING_LIBEARY}
 )
 
 include(CMakePackageConfigHelpers)
+
 configure_package_config_file(
-	${CMAKE_CURRENT_LIST_DIR}/ImGuiConfig.cmake.in
-	${CMAKE_CURRENT_BINARY_DIR}/ImGuiConfig.cmake
-	INSTALL_DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/imgui_docking
+	"${CMAKE_CURRENT_LIST_DIR}/config/${IMGUI_DOCKING_LIBEARY}Config.cmake.in"
+	"${CMAKE_CURRENT_BINARY_DIR}/ImGuiDockingConfig.cmake"
+	INSTALL_DESTINATION "${CMAKE_INSTALL_LIBDIR}/cmake/${IMGUI_DOCKING_LIBEARY}"
+)
+
+configure_package_config_file(
+	"${CMAKE_CURRENT_LIST_DIR}/config/${IMGUI_DOCKING_LIBEARY}.pc.in"
+	"${CMAKE_CURRENT_BINARY_DIR}/${IMGUI_DOCKING_LIBEARY}.pc"
+	INSTALL_DESTINATION "${CMAKE_INSTALL_LIBDIR}/pkgconfig"
 )
 
 install(
-	FILES ${CMAKE_CURRENT_BINARY_DIR}/ImGuiConfig.cmake
-	DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/imgui_docking
+	FILES "${CMAKE_CURRENT_BINARY_DIR}/${IMGUI_DOCKING_LIBEARY}Config.cmake"
+	DESTINATION "${CMAKE_INSTALL_LIBDIR}/cmake/${IMGUI_DOCKING_LIBEARY}"
 )
 
+install(
+	FILES "${CMAKE_CURRENT_BINARY_DIR}/${IMGUI_DOCKING_LIBEARY}.pc"
+	DESTINATION "${CMAKE_INSTALL_LIBDIR}/pkgconfig"
+)

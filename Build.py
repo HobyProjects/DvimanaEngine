@@ -73,7 +73,7 @@ CONFIG_PATH = "build/config"        # The path to the config directory
 PREFIX_PATH = "build/packages"      # The path to the packages directory
 SUBMODULES_PATH = "Vendors"         # The path to the submodules directory
 CMAKE_MODULES_PATH = "CMake"        # The path to the CMake modules directory
-SUBMODULES = [  "imgui_docking" ] #"glfw", "spdlog", "glew-cmake",
+SUBMODULES = [ "glfw", "spdlog", "glew-cmake", "glm", "entt", "imgui_docking", "stb_image" ] 
 
 def verify_submodules():
     """
@@ -139,6 +139,7 @@ CMAKE_CACHE_VARIABLES = f"""
 -DCMAKE_BUILD_TYPE={BUILD_TYPE} 
 -DCMAKE_INSTALL_PREFIX={PREFIX_PATH} 
 -DCMAKE_PREFIX_PATH={PREFIX_PATH}
+-DCMAKE_MODULE_PATH={CMAKE_MODULES_PATH}
 """.replace("\n", " ").replace("\t", " ")
 
 # Loop through each submodule and do the following:
@@ -146,6 +147,8 @@ CMAKE_CACHE_VARIABLES = f"""
 #  2. Build the submodule
 #  3. Install the submodule
 for submodule in SUBMODULES:
+    print("=====================================================================================================================================")
+
     # Step 1: Generate the build files for the submodule
     # ---------------------------------------------------
     # The `-S` option specifies the source directory of the submodule
@@ -169,3 +172,12 @@ for submodule in SUBMODULES:
     # The `--config {BUILD_TYPE}` option specifies the build type
     # The `--prefix {PREFIX_PATH}` option specifies the directory where the submodule will be installed
     cmd(f"cmake --install {CONFIG_PATH}/{submodule} --config {BUILD_TYPE} --prefix {PREFIX_PATH}")
+
+
+print("=====================================================================================================================================")
+
+# print("Configuring primary project")
+# dvimana_core_lib = "Dvicore"
+# cmd(f"cmake {CMAKE_CACHE_VARIABLES} -S Src/{dvimana_core_lib} -B {CONFIG_PATH}/{dvimana_core_lib}")
+# cmd(f"cmake --build {CONFIG_PATH}/{dvimana_core_lib} --config {BUILD_TYPE}")
+# cmd(f"cmake --install {CONFIG_PATH}/{dvimana_core_lib} --config {BUILD_TYPE} --prefix {PREFIX_PATH}")
