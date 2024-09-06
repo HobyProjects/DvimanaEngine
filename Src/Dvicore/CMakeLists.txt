@@ -3,10 +3,11 @@ cmake_minimum_required(VERSION 3.15)
 include(GNUInstallDirs)
 include(CMakePackageConfigHelpers)
 
-find_package(libspdlog REQUIRED)
 find_package(glfw3 REQUIRED)
-find_package(EnTT REQUIRED)
 find_package(glew REQUIRED)
+find_package(glm REQUIRED)
+find_package(spdlog REQUIRED)
+find_package(EnTT REQUIRED)
 
 project(DviCore 1.0.0 LANGUAGES CXX C)
 
@@ -104,14 +105,26 @@ install(
 )
 
 configure_package_config_file(
-	${CMAKE_CURRENT_SOURCE_DIR}/Config/DviCoreConfig.cmake.in
-	${CMAKE_CURRENT_BINARY_DIR}/DviCoreConfig.cmake
+	${CMAKE_CURRENT_SOURCE_DIR}/Config/${DVIMANA_CORE}Config.cmake.in
+	${CMAKE_CURRENT_BINARY_DIR}/${DVIMANA_CORE}Config.cmake
 	INSTALL_DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/Dvimana
 )
 
 install(
-	FILES ${CMAKE_CURRENT_BINARY_DIR}/DviCoreConfig.cmake
+	FILES ${CMAKE_CURRENT_BINARY_DIR}/${DVIMANA_CORE}Config.cmake
 	DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/Dvimana
+)
+
+configure_package_config_file(
+	"${CMAKE_CURRENT_LIST_DIR}/Config/${DVIMANA_CORE}.pc.in"
+	"${CMAKE_CURRENT_BINARY_DIR}/${DVIMANA_CORE}.pc"
+	INSTALL_DESTINATION "${CMAKE_INSTALL_LIBDIR}/pkgconfig"
+)
+
+
+install(
+	FILES "${CMAKE_CURRENT_BINARY_DIR}/${DVIMANA_CORE}.pc"
+	DESTINATION "${CMAKE_INSTALL_LIBDIR}/pkgconfig"
 )
 
 
