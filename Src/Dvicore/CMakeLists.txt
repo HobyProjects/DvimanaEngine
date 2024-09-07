@@ -12,7 +12,6 @@ find_package(EnTT REQUIRED)
 find_package(ImGuiDocking REQUIRED)
 find_package(StbImage REQUIRED)
 
-
 set(DVIMANA_CORE DviCore)
 set(DVICORE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/Src)
 

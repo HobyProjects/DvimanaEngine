@@ -5,8 +5,6 @@ set(
     DVIMANA_APP_HEADERS
         ${DVIMANA_APP_SRCDIR}/Application/Application.hpp
         ${DVIMANA_APP_SRCDIR}/Editor/EditorLayer.hpp
-        
-
 )
 
 set(
@@ -14,7 +12,6 @@ set(
         ${DVIMANA_APP_SRCDIR}/Application/Application.cpp
         ${DVIMANA_APP_SRCDIR}/Editor/EditorLayer.cpp
         ${DVIMANA_APP_SRCDIR}/EntryPoint/Dvimana.cpp
-
 )
 
 add_executable(${DVIMANA_APPLICATION} ${DVIMANA_APP_HEADERS} ${DVIMANA_APP_SOURCES})

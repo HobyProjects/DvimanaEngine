@@ -1,4 +1,4 @@
 @PACKAGE_INIT@
 
 include("${CMAKE_CURRENT_LIST_DIR}/StbImageTargets.cmake")
-check_required_component(StbImage)
+check_required_components(StbImage)

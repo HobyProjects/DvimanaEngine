@@ -1,7 +1,7 @@
 @PACKAGE_INIT@
 
 include("${CMAKE_CURRENT_LIST_DIR}/ImGuiDockingTargets.cmake")
-check_required_component(ImGuiDocking)
+check_required_components(ImGuiDocking)
 
 include(CMakeFindDependencyMacro)
 find_dependency(glfw3 REQUIRED)

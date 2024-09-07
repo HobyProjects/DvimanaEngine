@@ -4,14 +4,13 @@
     {
       "name": "common-base",
       "hidden": true,
-      "binaryDir": "${sourceDir}/out/build/${presetName}",
-      "installDir": "${sourceDir}/out/install/${presetName}"
+      "binaryDir": "${sourceDir}/build/${presetName}",
+      "installDir": "${sourceDir}/out/${presetName}"
     },
     {
       "name": "linux-base",
       "hidden": true,
       "inherits": "common-base",
-      "generator": "Unix Makefiles",
       "condition": {
         "type": "equals",
         "lhs": "${hostSystemName}",
@@ -85,11 +84,25 @@
       "name": "windows-base",
       "hidden": true,
       "inherits": "common-base",
-      "generator": "Ninja",
       "condition": {
         "type": "equals",
         "lhs": "${hostSystemName}",
         "rhs": "Windows"
+      },
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE_INIT": "Debug",
+        "CMAKE_INSTALL_PREFIX": "C:\\Users\\Isuru Senanayaka\\source\\repos\\DvimanaEngine\\build\\packages;C:\\Users\\Isuru Senanayaka\\source\\repos\\DvimanaEngine\\build\\packages\\glfw;C:\\Users\\Isuru Senanayaka\\source\\repos\\DvimanaEngine\\build\\packages\\spdlog;C:\\Users\\Isuru Senanayaka\\source\\repos\\DvimanaEngine\\build\\packages\\glew;C:\\Users\\Isuru Senanayaka\\source\\repos\\DvimanaEngine\\build\\packages\\glm;C:\\Users\\Isuru Senanayaka\\source\\repos\\DvimanaEngine\\build\\packages\\entt;C:\\Users\\Isuru Senanayaka\\source\\repos\\DvimanaEngine\\build\\packages\\ImGuiDocking;C:\\Users\\Isuru Senanayaka\\source\\repos\\DvimanaEngine\\build\\packages\\StbImage;",
+        "CMAKE_PREFIX_PATH": "C:\\Users\\Isuru Senanayaka\\source\\repos\\DvimanaEngine\\build\\packages;C:\\Users\\Isuru Senanayaka\\source\\repos\\DvimanaEngine\\build\\packages\\glfw;C:\\Users\\Isuru Senanayaka\\source\\repos\\DvimanaEngine\\build\\packages\\spdlog;C:\\Users\\Isuru Senanayaka\\source\\repos\\DvimanaEngine\\build\\packages\\glew;C:\\Users\\Isuru Senanayaka\\source\\repos\\DvimanaEngine\\build\\packages\\glm;C:\\Users\\Isuru Senanayaka\\source\\repos\\DvimanaEngine\\build\\packages\\entt;C:\\Users\\Isuru Senanayaka\\source\\repos\\DvimanaEngine\\build\\packages\\ImGuiDocking;C:\\Users\\Isuru Senanayaka\\source\\repos\\DvimanaEngine\\build\\packages\\StbImage;"
+      },
+      "vendor": {
+        "microsoft.com/VisualStudioSettings/CMake/1.0": {
+          "hostOS": [
+            "Windows"
+          ]
+        },
+        "microsoft.com/VisualStudioRemoteSettings/CMake/1.0": {
+          "sourceDir": "$env{HOME}/.vs/$ms{projectDirName}"
+        }
       }
     },
     {
@@ -144,7 +157,6 @@
       "name": "macos-base",
       "hidden": true,
       "inherits": "common-base",
-      "generator": "Unix Makefiles",
       "condition": {
         "type": "equals",
         "lhs": "${hostSystemName}",
