@@ -1,15 +1,17 @@
 cmake_minimum_required(VERSION 3.15)
+project(DviCore VERSION 1.0.0 LANGUAGES CXX C)
 
 include(GNUInstallDirs)
 include(CMakePackageConfigHelpers)
 
 find_package(glfw3 REQUIRED)
-find_package(glew REQUIRED)
+find_package(OpenGL REQUIRED)
 find_package(glm REQUIRED)
 find_package(spdlog REQUIRED)
 find_package(EnTT REQUIRED)
+find_package(ImGuiDocking REQUIRED)
+find_package(StbImage REQUIRED)
 
-project(DviCore 1.0.0 LANGUAGES CXX C)
 
 set(DVIMANA_CORE DviCore)
 set(DVICORE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/Src)
@@ -60,9 +62,11 @@ target_link_libraries(
 		PUBLIC
 			glfw
 			spdlog::spdlog
-			libglew_static
+			OpenGL::GL
 			glm::glm
 			EnTT::EnTT
+			ImGui::ImGuiDocking
+			Stb::StbImage
 )
 
 add_library(Dvimana::DviCore ALIAS ${DVIMANA_CORE})

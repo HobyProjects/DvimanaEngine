@@ -19,7 +19,7 @@
 #undef APIENTRY
 #endif
 
-#include <stb_image.h>
+#include <StbImage/stb_image.h>
 
 #define GLM_ENABLE_EXPERIMENTAL
 #include <glm/glm.hpp>

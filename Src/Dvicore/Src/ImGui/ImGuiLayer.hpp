@@ -1,9 +1,9 @@
 #pragma once
 
-#include <imgui.h>
-#include <imgui_impl_opengl3.h>
-#include <imgui_impl_glfw.h>
-#include <imgui_internal.h>
+#include <ImGuiDocking/imgui.h>
+#include <ImGuiDocking/imgui_impl_opengl3.h>
+#include <ImGuiDocking/imgui_impl_glfw.h>
+#include <ImGuiDocking/imgui_internal.h>
 
 #include "Layer.hpp"
 #include "Window.hpp"

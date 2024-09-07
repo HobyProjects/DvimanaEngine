@@ -5,7 +5,6 @@ cmake_minimum_required (VERSION 3.15)
 project(StbImage C CXX)
 
 set(STB_IMAGE_LIBARY StbImage)
-
 add_library(
 	${STB_IMAGE_LIBARY}
         STATIC 
