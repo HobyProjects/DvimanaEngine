@@ -113,8 +113,8 @@ def get_base_configure_preset():
     return {
         "name": "common-base",
         "hidden": True,
-        "binaryDir": "${sourceDir}/build/${presetName}",
-        "installDir": "${sourceDir}/out/${presetName}"
+        "binaryDir": "${sourceDir}/build/config/${presetName}",
+        "installDir": "${sourceDir}/build/packages/${presetName}"
     }
 
 def get_os_base_configure_preset(os: str, inherits: str, cache_variables: list):
@@ -519,16 +519,19 @@ if __name__ == "__main__":
         system_os.remove("Src/CMakePresets.json")
 
     # Open the CMakePresets.json file and write the root presets object to it.
-    with open("Src/CMakePresets.json", 'a+') as f:
+    with open("Src/Dvicore/CMakePresets.json", 'a+') as f:
+        json.dump(root_presets, f, indent=2)
+
+    # Open the CMakePresets.json file and write the root presets object to it.
+    with open("Src/Dvimana/CMakePresets.json", 'a+') as f:
         json.dump(root_presets, f, indent=2)
 
 #==============================================================================================================================================
     
     if BUILD_TARGETS == "all" or BUILD_TARGETS == "internal":
         if not system_os.path.exists("Src/CMakePresets.json"):
-            print("CMakePresets.json file is missing")
+            print("Src/CMakePresets.json file is missing")
             print("Please build external targets first")
             sys.exit(1)
 
         cmd(f"cmake --preset {TARGETS_BUILD_SYSTEM_NAME.lower()}-{TARGETS_BUILD_ARCHITECTURE.lower()}-{TARGETS_BUILD_TYPE.lower()} -S Src -B Src/build/config")
-        cmd(f"cmake --build Src/build/config --config {TARGETS_BUILD_TYPE}")

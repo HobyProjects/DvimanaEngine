@@ -1,5 +1,8 @@
 cmake_minimum_required(VERSION 3.15)
 project(glad C)
+set(PROJECT_DESCRIPTION "Multi-Language Vulkan/GL/GLES/EGL/GLX/WGL Loader-Generator based on the official specs.")
+set(PROJECT_HOMEPAGE_URL "https://github.com/Dav1dde/glad.git")
+set(PROJECT_VERSION "2.0.7")
 
 find_package(OpenGL REQUIRED)
 
