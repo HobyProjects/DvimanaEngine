@@ -11,17 +11,11 @@
 #include <array>
 #include <algorithm>
 
-#include <GL/glew.h>
-
 #define GLFW_INCLUDE_NONE
-#include <GLFW/glfw3.h>
-#ifdef APIENTRY
-#undef APIENTRY
-#endif
-
-#include <StbImage/stb_image.h>
-
 #define GLM_ENABLE_EXPERIMENTAL
+#include <glad/glad.h>
+#include <GLFW/glfw3.h>
+#include <StbImage/stb_image.h>
 #include <glm/glm.hpp>
 #include <glm/ext/matrix_transform.hpp>
 #include <glm/gtc/matrix_transform.hpp>

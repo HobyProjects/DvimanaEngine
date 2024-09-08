@@ -65,7 +65,7 @@ class ProjectExternalLibs:
         build artifacts.
     """
 
-    def __init__(self, name, dir):
+    def __init__(self, name, dir, options):
         """
         Initialize a ProjectExternalLibs object.
 
@@ -78,9 +78,10 @@ class ProjectExternalLibs:
             stored.
         """
         self.name = name
-        self.src_dir = f"Vendors/{dir}"
-        self.build_dir = f"build/config/{name}"
+        self.source_directory = f"Vendors/{dir}"
+        self.build_config_dir = f"build/config/{name}"
         self.prefix_dir = f"build/packages/{name}"
+        self.options = options
 
     def __str__(self):
         """
@@ -91,7 +92,7 @@ class ProjectExternalLibs:
         str
             A string representation of the ProjectExternalLibs object.
         """
-        return f"Name: {self.name}\nDir: {self.dir}\nBuild Dir: {self.build_dir}\nPrefix: {self.prefix}\n"
+        return f"Name: {self.name}\nDir: {self.dir}\nBuild Dir: {self.build_config_dir}\nPrefix: {self.prefix}\n Options: {self.options}"
 
 #====================================[ CMakePresets Generator Function ]============================================================================================================   
 
@@ -338,19 +339,19 @@ if __name__ == "__main__":
 
     # These are the external libraries that we will build.
     PROJECT_EXTERNALS = [
-        ProjectExternalLibs("glfw", "glfw"),
-        ProjectExternalLibs("spdlog", "spdlog"),
-        ProjectExternalLibs("glew", "glew-cmake"),
-        ProjectExternalLibs("glm", "glm"),
-        ProjectExternalLibs("entt", "entt"),
-        ProjectExternalLibs("ImGuiDocking", "imgui_docking"),
-        ProjectExternalLibs("StbImage", "stb_image")
+        ProjectExternalLibs("glfw", "glfw", ""),
+        ProjectExternalLibs("spdlog", "spdlog", ""),
+        ProjectExternalLibs("glad", "glad", ""),
+        ProjectExternalLibs("glm", "glm", ""),
+        ProjectExternalLibs("entt", "entt", ""),
+        ProjectExternalLibs("ImGuiDocking", "imgui_docking", ""),
+        ProjectExternalLibs("StbImage", "stb_image", "")
     ]
 
     # Iterate over the external libraries and add the path to their prefix
     # directories to the list of paths.
     for external_module in PROJECT_EXTERNALS:
-        if not system_os.path.exists(external_module.src_dir):
+        if not system_os.path.exists(external_module.source_directory):
             print(f"-- {external_module.name}: MISSING")
             print("Please run 'git submodule update --init --recursive'")
             sys.exit(1)
@@ -382,11 +383,11 @@ if __name__ == "__main__":
         # Iterate over the external libraries and build them.
         for external_module in PROJECT_EXTERNALS:
             # Generate the build files for the library.
-            cmd(f"cmake {CMAKE_CACHE_VARIABLES} -S {external_module.src_dir} -B {external_module.build_dir}")
+            cmd(f"cmake {CMAKE_CACHE_VARIABLES} {external_module.options} -S {external_module.source_directory} -B {external_module.build_config_dir}")
             # Build the library.
-            cmd(f"cmake --build {external_module.build_dir} --config {TARGETS_BUILD_TYPE}")
+            cmd(f"cmake --build {external_module.build_config_dir} --config {TARGETS_BUILD_TYPE}")
             # Install the library.
-            cmd(f"cmake --install {external_module.build_dir} --config {TARGETS_BUILD_TYPE} --prefix {external_module.prefix_dir}")
+            cmd(f"cmake --install {external_module.build_config_dir} --config {TARGETS_BUILD_TYPE} --prefix {external_module.prefix_dir}")
 
 # =====================================================[ Writing CMake Presets ]=========================================================================================
 
@@ -524,5 +525,10 @@ if __name__ == "__main__":
 #==============================================================================================================================================
     
     if BUILD_TARGETS == "all" or BUILD_TARGETS == "internal":
+        if not system_os.path.exists("Src/CMakePresets.json"):
+            print("CMakePresets.json file is missing")
+            print("Please build external targets first")
+            sys.exit(1)
+
         cmd(f"cmake --preset {TARGETS_BUILD_SYSTEM_NAME.lower()}-{TARGETS_BUILD_ARCHITECTURE.lower()}-{TARGETS_BUILD_TYPE.lower()} -S Src -B Src/build/config")
         cmd(f"cmake --build Src/build/config --config {TARGETS_BUILD_TYPE}")

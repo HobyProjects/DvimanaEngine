@@ -90,9 +90,8 @@ namespace Dvimana {
         glfwMakeContextCurrent(m_Window);
         glfwSwapInterval(1);
 
-        glewExperimental = GL_TRUE;
-        if(GLenum status = glewInit(); status != GLEW_OK){
-            DVIMANA_ASSERT(false, "Failed to initialize GLEW!");
+        if(GLenum status = gladLoadGLLoader((GLADloadproc)glfwGetProcAddress); status != GL_TRUE){
+            DVIMANA_ASSERT(false, "Failed to initialize GLAD!");
             return false;
         }
 

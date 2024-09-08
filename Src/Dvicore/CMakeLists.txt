@@ -5,7 +5,7 @@ include(GNUInstallDirs)
 include(CMakePackageConfigHelpers)
 
 find_package(glfw3 REQUIRED)
-find_package(OpenGL REQUIRED)
+find_package(glad REQUIRED)
 find_package(glm REQUIRED)
 find_package(spdlog REQUIRED)
 find_package(EnTT REQUIRED)
@@ -55,13 +55,24 @@ add_library(
 	${DVICORE_HEADERS}
 	${DVICORE_SOURCES}
 )
+
+target_include_directories(
+	${DVIMANA_CORE} 
+		PRIVATE
+			${DVICORE_DIR}
+			${DVICORE_DIR}/Core
+			${DVICORE_DIR}/Debug
+			${DVICORE_DIR}/Event
+			${DVICORE_DIR}/Renderer
+			${DVICORE_DIR}/ImGui
+)
 	
 target_link_libraries(
 	${DVIMANA_CORE} 
 		PUBLIC
 			glfw
 			spdlog::spdlog
-			OpenGL::GL
+			glad::glad
 			glm::glm
 			EnTT::EnTT
 			ImGui::ImGuiDocking
