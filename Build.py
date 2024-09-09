@@ -34,8 +34,8 @@ def get_base_configure_preset():
     return {
         "name": "common-base",
         "hidden": True,
-        "binaryDir": "${sourceDir}/build",
-        "installDir": "${sourceDir}/build"
+        "binaryDir": "${sourceDir}/build/config",
+        "installDir": "${sourceDir}/build/packages"
     }
 
 def get_os_base_configure_preset(os: str, inherits: str, cache_variables: list):
@@ -52,7 +52,7 @@ def get_os_base_configure_preset(os: str, inherits: str, cache_variables: list):
     result["cacheVariables"] = {
         "CMAKE_BUILD_TYPE_INIT": f"{cache_variables[0]}",
         "CMAKE_INSTALL_PREFIX": f"{cache_variables[1]}",
-        "CMAKE_PREFIX_PATH": f"{cache_variables[2]}"
+        "CMAKE_PREFIX_PATH": f"{cache_variables[1]}"
     }
     result["vendor"] = {
         "microsoft.com/VisualStudioSettings/CMake/1.0": {"hostOS": [os]},
@@ -65,7 +65,7 @@ def get_os_preset(os: str, inherits: str, arch: str, conf: str):
         "name": f"{os.lower()}-{arch}-{conf.lower()}",
         "inherits": inherits,
         "displayName": f"{arch}-{conf}",
-        "architecture": {"value": arch, "strategy": "external"},
+        "architecture": { "value": arch, "strategy": "external"},
         "cacheVariables": {
             "CMAKE_BUILD_TYPE_INIT": f"{conf}"
         }
@@ -99,7 +99,7 @@ def generate_preset(dir: str, preset_cache_variables: list):
     build_presets.append(base_build_preset)
     test_presets.append(base_test_preset)
 
-    os_names = ["Linux" , "Windows", "macOS"]
+    os_names = [ "Linux" , "Windows", "macOS"]
     configs = [ "Debug", "Release"]
     
     for _os in os_names:
@@ -145,20 +145,28 @@ def generate_preset(dir: str, preset_cache_variables: list):
     echo(f"Created CMakePresets.json in {dir}")
 
 
-def get_build_configurations(platform: str, build_type: str, projlibs: list[ProjectlLibs]):
+def get_preset_cache_variables(platform: str, build_type: str, projlibs: list):
     preset_cache_variables = str()
-    targets_cache_variables = str()
 
     for lib in projlibs:
         if platform == "Windows":
             preset_cache_variables += f"{system_os.path.abspath(lib.prefix_dir)};"
-            targets_cache_variables += f"{lib.prefix_dir};"
         else:
             preset_cache_variables += f"{system_os.path.abspath(lib.prefix_dir)}:"
+
+    return preset_cache_variables
+
+
+def get_cmake_cache_variables(platform: str, build_type: str, projlibs: list):
+    targets_cache_variables = str()
+
+    for lib in projlibs:
+        if platform == "Windows":
+            targets_cache_variables += f"{lib.prefix_dir};"
+        else:
             targets_cache_variables += f"{lib.prefix_dir}:"
 
-    config_list = [ preset_cache_variables, targets_cache_variables ]
-    return config_list
+    return targets_cache_variables
 
 #======================================================================================================================================================
 
@@ -184,10 +192,9 @@ if __name__ == "__main__":
         "--target",
         type=str,
         help="The target to build for. The following values are valid:"
-            " - external: Build external libraries / executables only"
-            " - internal: Build internal libraries / executables only"
-            " - executables: Build executables only"
-            " - all: Build all libraries / executables"
+            " - external: Build external libraries"
+            " - internal: Build internal libraries"
+            " - all: Build all libraries"
     )
 
     args = parser.parse_args()
@@ -209,7 +216,7 @@ if __name__ == "__main__":
         echo("x86 or x64 architecture.")
         sys.exit(1)
 
-    if args.target != "external" and args.target != "internal" and args.target != "all":
+    if args.target != "external" and args.target != "internal" and args.target != "all" and args.target != "executable":
         echo(f"Invalid target: {args.target}")
         echo("Valid targets are: external, internal, all")
         echo("")
@@ -224,6 +231,7 @@ if __name__ == "__main__":
     TARGETS_BUILD_ARCHITECTURE = args.arch
     BUILD_TARGETS = args.target
     TARGETS_BUILD_SYSTEM_NAME = str()
+    
     if sys.platform == "win32":
         TARGETS_BUILD_SYSTEM_NAME = "Windows"
     elif sys.platform == "darwin":
@@ -232,16 +240,6 @@ if __name__ == "__main__":
         TARGETS_BUILD_SYSTEM_NAME = "Linux"
 
 #======================================================================================================================================================
-
-    PRESET_PREFIX_PATHS = list()
-    TARGETS_PREFIX_PATHS = list()
-
-    if TARGETS_BUILD_SYSTEM_NAME == "Windows":
-        PRESET_PREFIX_PATHS.append(f"{system_os.path.abspath("build/packages")};") 
-        TARGETS_PREFIX_PATHS.append("build/packages;")
-    else:
-        PRESET_PREFIX_PATHS.append(f"{system_os.path.abspath("build/packages")}:")
-        TARGETS_PREFIX_PATHS.append("build/packages:")
 
     PROJECT_LIBS = [
         ProjectlLibs("glfw", "Vendors/glfw", "build/config/glfw", "build/packages/glfw", ""),
@@ -255,22 +253,23 @@ if __name__ == "__main__":
 
     for external_module in PROJECT_LIBS:
         if not system_os.path.exists(external_module.source_directory):
-            echo(f"{external_module.name}: MISSING")
+            echo(f"{external_module.name}:> MISSING")
             echo("Please run 'git submodule update --init --recursive'")
             sys.exit(1)
         else:
-            echo(f"{external_module.name}: FOUND")
+            echo(f"{external_module.name}:> FOUND")
 
 #==============================================================================================================================================
-    cache_variables = get_build_configurations(TARGETS_BUILD_SYSTEM_NAME, TARGETS_BUILD_TYPE, PROJECT_LIBS)
+    preset_cache_variables = get_preset_cache_variables(TARGETS_BUILD_SYSTEM_NAME, TARGETS_BUILD_TYPE, PROJECT_LIBS)
+    cmake_cache_variables = get_cmake_cache_variables(TARGETS_BUILD_SYSTEM_NAME, TARGETS_BUILD_TYPE, PROJECT_LIBS)
 
     if BUILD_TARGETS == "external" or BUILD_TARGETS == "all":
         for external_module in PROJECT_LIBS:
-            cmd(f"cmake {cache_variables[1]} {external_module.options} -S {external_module.source_directory} -B {external_module.build_dir}")
+            cmd(f"cmake -DCMAKE_BUILD_TYPE_INIT={TARGETS_BUILD_TYPE} -DCMAKE_PREFIX_PATH={cmake_cache_variables} -DCMAKE_INSTALL_PREFIX={cmake_cache_variables} {external_module.options} -S {external_module.source_directory} -B {external_module.build_dir}")
             cmd(f"cmake --build {external_module.build_dir} --config {TARGETS_BUILD_TYPE}")
             cmd(f"cmake --install {external_module.build_dir} --config {TARGETS_BUILD_TYPE} --prefix {external_module.prefix_dir}")
  
-        generate_preset("Src/Dvicore", cache_variables[0])
+        generate_preset("Src/Dvicore", [ TARGETS_BUILD_TYPE, preset_cache_variables ])
 
 #==============================================================================================================================================
 
@@ -285,6 +284,6 @@ if __name__ == "__main__":
         cmd(f"cmake --install build/config/Dvicore --config {TARGETS_BUILD_TYPE} --prefix build/packages/Dvicore")
 
         PROJECT_LIBS.append(ProjectlLibs("DviCore", "Src/Dvicore", "build/config/Dvicore", "build/packages/Dvicore", ""))
-        cache_variables = get_build_configurations(TARGETS_BUILD_SYSTEM_NAME, TARGETS_BUILD_TYPE, PROJECT_LIBS)
+        cache_variables = get_preset_cache_variables(TARGETS_BUILD_SYSTEM_NAME, TARGETS_BUILD_TYPE, PROJECT_LIBS)
 
-        generate_preset("Src/Dvimana", cache_variables[0])
+        generate_preset("Src/Dvimana", [ TARGETS_BUILD_TYPE, cache_variables])
