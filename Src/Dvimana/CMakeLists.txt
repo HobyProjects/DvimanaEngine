@@ -1,6 +1,7 @@
 cmake_minimum_required(VERSION 3.15)
 project(Dvimana VERSION 1.0.0 LANGUAGES C CXX)
 
+find_package(DviCore REQUIRED)
 set(DVIMANA_APPLICATION Dvimana)
 
 set(
@@ -26,4 +27,4 @@ target_include_directories(
             Src/EntryPoint
 )
 
-target_link_libraries(${DVIMANA_APPLICATION} PRIVATE Dvimana::Core)
+target_link_libraries(${DVIMANA_APPLICATION} PRIVATE Dvimana::DviCore)

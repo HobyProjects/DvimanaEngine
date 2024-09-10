@@ -108,25 +108,25 @@ install(
 
 install(
 	FILES ${DVICORE_HEADERS}
-	DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/Dvimana
+	DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/DviCore
 )
 
 install(
 	EXPORT DviCoreTargets
 	FILE DviCoreTargets.cmake
 	NAMESPACE Dvimana::
-	DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/Dvimana
+	DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/DviCore
 )
 
 configure_package_config_file(
 	${CMAKE_CURRENT_SOURCE_DIR}/Config/${DVIMANA_CORE}Config.cmake.in
 	${CMAKE_CURRENT_BINARY_DIR}/${DVIMANA_CORE}Config.cmake
-	INSTALL_DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/Dvimana
+	INSTALL_DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/DviCore
 )
 
 install(
 	FILES ${CMAKE_CURRENT_BINARY_DIR}/${DVIMANA_CORE}Config.cmake
-	DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/Dvimana
+	DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/DviCore
 )
 
 configure_package_config_file(

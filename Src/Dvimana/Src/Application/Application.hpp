@@ -1,6 +1,6 @@
 #pragma once
 
-#include "DviCore.hpp"
+#include <DviCore/DviCore.hpp>
 
 namespace Dvimana {
     class Application {

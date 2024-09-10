@@ -274,16 +274,16 @@ if __name__ == "__main__":
 #==============================================================================================================================================
 
     if BUILD_TARGETS == "internal" or BUILD_TARGETS == "all":
-        if not system_os.path.exists("Src/Dvicore/CMakePresets.json"):
+        if not system_os.path.exists("Src/DviCore/CMakePresets.json"):
             echo("CMakePresets.json: MISSING")
             echo("Please build external libs first.")
             sys.exit(1)
 
-        cmd(f"cmake --preset {TARGETS_BUILD_SYSTEM_NAME.lower()}-{TARGETS_BUILD_ARCHITECTURE.lower()}-{TARGETS_BUILD_TYPE.lower()} -S Src/Dvicore -B build/config/Dvicore")
-        cmd(f"cmake --build build/config/Dvicore --config {TARGETS_BUILD_TYPE}")
-        cmd(f"cmake --install build/config/Dvicore --config {TARGETS_BUILD_TYPE} --prefix build/packages/Dvicore")
+        cmd(f"cmake --preset {TARGETS_BUILD_SYSTEM_NAME.lower()}-{TARGETS_BUILD_ARCHITECTURE.lower()}-{TARGETS_BUILD_TYPE.lower()} -S Src/Dvicore -B build/config/DviCore")
+        cmd(f"cmake --build build/config/DviCore --config {TARGETS_BUILD_TYPE}")
+        cmd(f"cmake --install build/config/DviCore --config {TARGETS_BUILD_TYPE} --prefix build/packages/DviCore")
 
-        PROJECT_LIBS.append(ProjectlLibs("DviCore", "Src/Dvicore", "build/config/Dvicore", "build/packages/Dvicore", ""))
+        PROJECT_LIBS.append(ProjectlLibs("DviCore", "Src/DviCore", "build/config/DviCore", "build/packages/DviCore", ""))
         cache_variables = get_preset_cache_variables(TARGETS_BUILD_SYSTEM_NAME, TARGETS_BUILD_TYPE, PROJECT_LIBS)
 
         generate_preset("Src/Dvimana", [ TARGETS_BUILD_TYPE, cache_variables])
