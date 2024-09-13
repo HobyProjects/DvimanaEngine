@@ -27,7 +27,7 @@ namespace Dvimana {
 			const Camera2D& GetCamera() const { return m_Camera; }
 			const CameraBounds& GetBounds() const { return m_Bounds; }
 			const glm::vec3& GetCameraPosition() const { return m_CameraPosition; }
-			void SetRotation(bool rotation) { m_Rotation = rotation; }
+			void SetRotation(bool rotation) { m_RotationEnabled = rotation; }
 			void SetZoomLevel(float zoomLevel) { m_ZoomLevel = zoomLevel; }
 		
 		private:
@@ -36,13 +36,13 @@ namespace Dvimana {
 			bool OnWindowResizeEvent(WindowResizeEvent& e);
 
 		private:
-			float m_AspectRatio;
-			float m_ZoomLevel = 1.0f;
-			bool m_Rotation;
+			float m_AspectRatio{0.0f};
+			float m_ZoomLevel{1.0f};
+			bool m_RotationEnabled{0.0f};
 			Camera2D m_Camera;
 			CameraBounds m_Bounds;
 
-			glm::vec3 m_CameraPosition = { 0.0f, 0.0f, 0.0f };
+			glm::vec3 m_CameraPosition{ 0.0f, 0.0f, 0.0f };
 			float m_CameraRotation{0.0f};
 			float m_CameraTranslationSpeed{100.0f};
 			float m_CameraRotationSpeed{10.0f};

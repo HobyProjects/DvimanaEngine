@@ -255,7 +255,7 @@ namespace Dvimana {
 
     class FrameBuffer {
         public:
-            FrameBuffer(const FrameSpecifications& specification);
+            FrameBuffer(FrameSpecifications specification);
             ~FrameBuffer();
 
             void Bind() const;

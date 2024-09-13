@@ -76,7 +76,7 @@ namespace Dvimana {
         const char* version = reinterpret_cast<const char*>(glGetString(GL_SHADING_LANGUAGE_VERSION));
         char GL_MAJOR = version[0];
         char GL_MINOR = version[2];
-        char GL_PATCH = version[4];
+        char GL_PATCH = version[5];
 
         std::stringstream ss;
         ss << "#version " << GL_MAJOR << GL_MINOR << GL_PATCH << " core";
@@ -90,10 +90,9 @@ namespace Dvimana {
         glfwMakeContextCurrent(m_Window);
         glfwSwapInterval(1);
 
-        if(GLenum status = gladLoadGLLoader((GLADloadproc)glfwGetProcAddress); status != GL_TRUE){
+        GLenum status = gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
+        if(status == 0)
             DVIMANA_ASSERT(false, "Failed to initialize GLAD!");
-            return false;
-        }
 
         DVI_CORE_INFO("GLEW initialized");
         return true;
@@ -186,7 +185,7 @@ namespace Dvimana {
                 GL_FLOAT,
                 element.Normalized ? GL_TRUE : GL_FALSE,
                 layout.GetStride(),
-                (const void*)(element.Offset)
+                reinterpret_cast<const void*>(static_cast<std::size_t>(element.Offset))
             );
         }
 
@@ -304,6 +303,8 @@ namespace Dvimana {
             in_file.seekg(0, std::ios::beg);
             in_file.read(&result[0], result.size());
             in_file.close();
+
+            DVI_CORE_INFO("Shader file read successfully : \n{0}", result);
             return result;
         }
 
@@ -406,7 +407,7 @@ namespace Dvimana {
         return std::make_shared<SubTexture>(texture, min, max);
     }
 
-    FrameBuffer::FrameBuffer(const FrameSpecifications& specification) {
+    FrameBuffer::FrameBuffer(FrameSpecifications specification) {
         m_Specification = specification;
 		CreateFrame();
     }
@@ -435,6 +436,10 @@ namespace Dvimana {
 
         glBindTexture(GL_TEXTURE_2D, m_FrameTextureID);
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, m_Specification.Width, m_Specification.Height, 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
         glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_FrameTextureID, 0);
 
         glBindRenderbuffer(GL_RENDERBUFFER, m_FrameRendererID);
@@ -466,6 +471,34 @@ namespace Dvimana {
 		DVIMANA_ASSERT(glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE, "Framebuffer is incomplete!");
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
     }
+
+    Camera2D::Camera2D(float left, float right, float bottom, float top){
+        m_Projection = glm::ortho(left, right, bottom, top, -1.0f, 1.0f);
+        m_ViewProjection = m_Projection * m_View;
+    }
+
+    void Camera2D::SetRotation(float rotation){
+        m_Rotation = rotation;
+        RecalculateViewMatrix();
+    }
+
+    void Camera2D::SetPosition(const glm::vec3 & position){
+        m_Position = position;
+        RecalculateViewMatrix();
+    }
+
+    void Camera2D::SetProjection(float left, float right, float bottom, float top){
+        m_Projection = glm::ortho(left, right, bottom, top, -1.0f, 1.0f);
+        m_ViewProjection = m_Projection * m_View;
+    }
+
+    void Camera2D::RecalculateViewMatrix(){
+        glm::mat4 transform = glm::translate(glm::mat4(1.0f), m_Position) * glm::rotate(glm::mat4(1.0f), glm::radians(m_Rotation), {0.0f, 0.0f, 1.0f});
+        glm::mat4 view = glm::inverse(transform);
+        m_ViewProjection = view * m_Projection;
+    }
+
+
 
     static const uint32_t MAX_QUADS = 10000;
     static const uint32_t MAX_VERTICES = MAX_QUADS * 4;
@@ -563,11 +596,11 @@ namespace Dvimana {
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, s_BatchData.QuadIBO);
         glBufferData(GL_ELEMENT_ARRAY_BUFFER, MAX_INDICES * sizeof(uint32_t), indices, GL_STATIC_DRAW);
 
-        s_BatchData.PlainTexture = std::make_shared<Texture>(1, 1);
-        s_BatchData.TextureSlots[0] = s_BatchData.PlainTexture;
         for(uint32_t i = 0; i < MAX_TEXTURE_SLOTS; i++)
 			s_BatchData.TextureSlots[i] = nullptr;
 
+        s_BatchData.PlainTexture = std::make_shared<Texture>(1, 1);
+        s_BatchData.TextureSlots[0] = s_BatchData.PlainTexture;
         s_BatchData.BatchShader = std::make_shared<Shader>("BatchShader", "Shaders/BatchVertex.glsl", "Shaders/BatchFragment.glsl");
 
         s_BatchData.QuadVertexPositions[0] = { -0.5f, -0.5f, 0.0f, 1.0f };
@@ -874,14 +907,10 @@ namespace Dvimana {
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
         glEnable(GL_DEPTH_TEST);
 
-        #ifdef DVIMANA_DEBUG
-
         glEnable(GL_DEBUG_OUTPUT);
 		glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
 		glDebugMessageCallback(DebugMessageCallback, nullptr);
 		glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DEBUG_SEVERITY_NOTIFICATION, 0, nullptr, GL_FALSE);
-
-        #endif
 
         BatchRenderer::Init();
     }

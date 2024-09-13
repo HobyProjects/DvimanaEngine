@@ -9,6 +9,8 @@ set(
         Src/Application/Application.hpp
         Src/Editor/EditorLayer.hpp
         Src/Camera/Camera.hpp
+        Src/Scene/Scene.hpp
+        Src/Scene/Components.hpp
 )
 
 set(
@@ -17,6 +19,7 @@ set(
         Src/Editor/EditorLayer.cpp
         Src/EntryPoint/Dvimana.cpp
         Src/Camera/Camera.cpp
+        Src/Scene/Scene.cpp
 )
 
 add_executable(${DVIMANA_APPLICATION} ${DVIMANA_APP_HEADERS} ${DVIMANA_APP_SOURCES})
@@ -28,6 +31,7 @@ target_include_directories(
             Src/Editor
             Src/EntryPoint
             Src/Camera
+            Src/Scene
 )
 
 target_link_libraries(${DVIMANA_APPLICATION} PRIVATE Dvimana::DviCore)

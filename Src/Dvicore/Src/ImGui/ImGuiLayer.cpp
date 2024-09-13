@@ -16,7 +16,7 @@ namespace Dvimana {
         (m_ColorScheme == ImGuiColorScheme::Dark) ? UseColorDark() : UseColorLight();
 
         ImGui_ImplGlfw_InitForOpenGL(m_Window->GetNativeWindow(), true);
-        ImGui_ImplOpenGL3_Init(OpenGLInfo::GetGLSLVersion().c_str());
+        ImGui_ImplOpenGL3_Init("#version 440 core");
     }
 
     void ImGuiLayer::OnDetach(){

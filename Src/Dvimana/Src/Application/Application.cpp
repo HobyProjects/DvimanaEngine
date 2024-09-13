@@ -5,14 +5,14 @@ namespace Dvimana {
     Application::Application(){
         m_Window = std::make_shared<Window>();
         m_LayerStack = std::make_shared<LayerStack>();
-        m_ImGuiLayer = std::make_shared<ImGuiLayer>();
+        m_ImGuiLayer = std::make_shared<ImGuiLayer>(m_Window, ImGuiColorScheme::Dark);
 
         EventReceiver::SetWindowCallback(m_Window, DVI_CALLBACK(Application::OnEvent));
         InputHandler::TargetWindow(m_Window);
         Renderer::Init();
 
-        m_LayerStack->PushOverlay(m_ImGuiLayer);
-        m_LayerStack->PushLayer(std::make_shared<EditorLayer>(m_Window, m_ImGuiLayer));
+        PushOverlay(m_ImGuiLayer);
+        PushLayer(std::make_shared<EditorLayer>(m_Window, m_ImGuiLayer));
     }
 
     Application::~Application(){
