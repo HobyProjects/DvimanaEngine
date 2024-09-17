@@ -33,7 +33,17 @@ set(
 	${DVICORE_DIR}/Event/MouseEvent.hpp
 	${DVICORE_DIR}/Event/WindowEvent.hpp
 	${DVICORE_DIR}/Event/Inputs.hpp
-	${DVICORE_DIR}/Renderer/OpenGL.hpp
+	${DVICORE_DIR}/OpenGL/GL.hpp
+	${DVICORE_DIR}/OpenGL/GL_Debug.hpp
+	${DVICORE_DIR}/OpenGL/GL_Info.hpp
+	${DVICORE_DIR}/OpenGL/GL_Context.hpp
+	${DVICORE_DIR}/OpenGL/GL_Buffers.hpp
+	${DVICORE_DIR}/OpenGL/GL_VertexArray.hpp
+	${DVICORE_DIR}/OpenGL/GL_Shader.hpp
+	${DVICORE_DIR}/OpenGL/GL_Texture.hpp
+	${DVICORE_DIR}/OpenGL/GL_FrameBuffer.hpp
+	${DVICORE_DIR}/OpenGL/GL_Camera.hpp
+	${DVICORE_DIR}/OpenGL/GL_Renderer.hpp
 	${DVICORE_DIR}/ImGui/ImGuiKeyCodes.hpp
 	${DVICORE_DIR}/ImGui/ImGuiLayer.hpp
 	${DVICORE_DIR}/DviCore.hpp
@@ -46,7 +56,17 @@ set(
 	${DVICORE_DIR}/Core/LayerStack.cpp
 	${DVICORE_DIR}/Event/EventReceiver.cpp
 	${DVICORE_DIR}/Event/Inputs.cpp
-	${DVICORE_DIR}/Renderer/OpenGL.cpp
+	${DVICORE_DIR}/OpenGL/GL.cpp
+	${DVICORE_DIR}/OpenGL/GL_Debug.cpp
+	${DVICORE_DIR}/OpenGL/GL_Info.cpp
+	${DVICORE_DIR}/OpenGL/GL_Context.cpp
+	${DVICORE_DIR}/OpenGL/GL_VertexArray.cpp
+	${DVICORE_DIR}/OpenGL/GL_Buffers.cpp
+	${DVICORE_DIR}/OpenGL/GL_Shader.cpp
+	${DVICORE_DIR}/OpenGL/GL_Texture.cpp
+	${DVICORE_DIR}/OpenGL/GL_FrameBuffer.cpp
+	${DVICORE_DIR}/OpenGL/GL_Camera.cpp
+	${DVICORE_DIR}/OpenGL/GL_Renderer.cpp
 	${DVICORE_DIR}/ImGui/ImGuiLayer.cpp
 )
 
@@ -63,7 +83,7 @@ target_include_directories(
 			${DVICORE_DIR}/Core
 			${DVICORE_DIR}/Debug
 			${DVICORE_DIR}/Event
-			${DVICORE_DIR}/Renderer
+			${DVICORE_DIR}/OpenGL
 			${DVICORE_DIR}/ImGui
 )
 	

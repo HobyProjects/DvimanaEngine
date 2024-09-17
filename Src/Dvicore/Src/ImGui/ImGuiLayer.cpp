@@ -1,10 +1,13 @@
 #include "ImGuiLayer.hpp"
+#include "Assert.hpp"
 
-namespace Dvimana {
+namespace DviCore 
+{
     ImGuiLayer::ImGuiLayer(std::shared_ptr<Window> window, ImGuiColorScheme colorScheme):
         Layer("ImGuiLayer"), m_Window(window), m_ColorScheme(colorScheme) {}
 
-    void ImGuiLayer::OnAttach(){
+    void ImGuiLayer::OnAttach()
+    {
         IMGUI_CHECKVERSION();
         ImGui::CreateContext();
         ImGuiIO& io = ImGui::GetIO(); (void)io;
@@ -14,39 +17,44 @@ namespace Dvimana {
 
         DVIMANA_ASSERT(m_Window != nullptr, "Window is null");
         (m_ColorScheme == ImGuiColorScheme::Dark) ? UseColorDark() : UseColorLight();
-
         ImGui_ImplGlfw_InitForOpenGL(m_Window->GetNativeWindow(), true);
-        ImGui_ImplOpenGL3_Init("#version 440 core");
+        ImGui_ImplOpenGL3_Init("#version 430 core");
     }
 
-    void ImGuiLayer::OnDetach(){
+    void ImGuiLayer::OnDetach()
+    {
         ImGui_ImplOpenGL3_Shutdown();
         ImGui_ImplGlfw_Shutdown();
         ImGui::DestroyContext();
     }
 
-    void ImGuiLayer::OnEvent(Event & events){
-        if(m_AllowEvents){
+    void ImGuiLayer::OnEvent(Event & events)
+    {
+        if(m_AllowEvents)
+        {
             ImGuiIO& io = ImGui::GetIO();
             events.Handled |= events.CategoryEquals(EventCategory::Mouse) & io.WantCaptureMouse;
             events.Handled |= events.CategoryEquals(EventCategory::Keyboard) & io.WantCaptureKeyboard;
         }
     }
 
-    void ImGuiLayer::Begin(){
+    void ImGuiLayer::Begin()
+    {
         ImGui_ImplOpenGL3_NewFrame();
         ImGui_ImplGlfw_NewFrame();
         ImGui::NewFrame(); 
     }
 
-    void ImGuiLayer::End(){
+    void ImGuiLayer::End()
+    {
         ImGuiIO &io = ImGui::GetIO();
-        io.DisplaySize = ImVec2(static_cast<float>(m_Window->GetSpecification().Width), static_cast<float>(m_Window->GetSpecification().Height));
+        io.DisplaySize = ImVec2(static_cast<float>(m_Window->GetWindowSpecification().Width), static_cast<float>(m_Window->GetWindowSpecification().Height));
 
         ImGui::EndFrame();
         ImGui::Render();
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-        if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable){
+        if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
+        {
             GLFWwindow *backup_current_context = glfwGetCurrentContext();
             ImGui::UpdatePlatformWindows();
             ImGui::RenderPlatformWindowsDefault();
@@ -54,23 +62,27 @@ namespace Dvimana {
         }  
     }
 
-    void ImGuiLayer::CreateDockspace(){
+    void ImGuiLayer::CreateDockspace()
+    {
         static bool opt_fullscreen = true;
         static bool opt_padding = false;
         static ImGuiDockNodeFlags dockspace_flags = ImGuiDockNodeFlags_None;
         ImGuiWindowFlags window_flags = ImGuiWindowFlags_MenuBar | ImGuiWindowFlags_NoDocking;
 
-        if (opt_fullscreen){
+        if (opt_fullscreen)
+        {
             const ImGuiViewport *viewport = ImGui::GetMainViewport();
             ImGui::SetNextWindowPos(viewport->WorkPos);
             ImGui::SetNextWindowSize(viewport->WorkSize);
             ImGui::SetNextWindowViewport(viewport->ID);
             ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0.0f);
             ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0.0f);
+            
             window_flags |= ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove;
             window_flags |= ImGuiWindowFlags_NoBringToFrontOnFocus | ImGuiWindowFlags_NoNavFocus;
         }
-        else{
+        else
+        {
             dockspace_flags &= -ImGuiDockNodeFlags_PassthruCentralNode;
         }
 
@@ -90,7 +102,8 @@ namespace Dvimana {
             ImGui::PopStyleVar(2);
 
         ImGuiIO &io = ImGui::GetIO();
-        if (io.ConfigFlags & ImGuiConfigFlags_DockingEnable){
+        if (io.ConfigFlags & ImGuiConfigFlags_DockingEnable)
+        {
             ImGuiID dockspace_id = ImGui::GetID("MyDockSpace");
             ImGui::DockSpace(dockspace_id, ImVec2(0.0f, 0.0f), dockspace_flags);
         }
@@ -98,12 +111,14 @@ namespace Dvimana {
         ImGui::End();
     }
 
-    void ImGuiLayer::UseColorScheme(ImGuiColorScheme colorScheme){
+    void ImGuiLayer::UseColorScheme(ImGuiColorScheme colorScheme)
+    {
         (colorScheme == ImGuiColorScheme::Dark) ? UseColorDark() : UseColorLight();
         m_ColorScheme = colorScheme;
     }
 
-    void ImGuiLayer::UseColorDark(){
+    void ImGuiLayer::UseColorDark()
+    {
         ImGui::StyleColorsDark();
         auto &colors = ImGui::GetStyle().Colors;
         colors[ImGuiCol_WindowBg]           = ImVec4{0.1f, 0.1f, 0.1f, 1.0f};
@@ -124,15 +139,18 @@ namespace Dvimana {
         colors[ImGuiCol_TitleBg]            = ImVec4{0.15f, 0.15f, 0.15f, 1.0f};
         colors[ImGuiCol_TitleBgActive]      = ImVec4{0.15f, 0.15f, 0.15f, 1.0f};
         colors[ImGuiCol_TitleBgCollapsed]   = ImVec4{0.15f, 0.15f, 0.15f, 1.0f};
+        
         ImGuiIO &io = ImGui::GetIO();
         ImGuiStyle &style = ImGui::GetStyle();
-        if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable){
+        if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
+        {
             style.WindowRounding = 10.0f;
             style.Colors[ImGuiCol_WindowBg].w = 1.0f;
         }
     }
 
-    void ImGuiLayer::UseColorLight(){
+    void ImGuiLayer::UseColorLight()
+    {
         ImGui::StyleColorsLight();
         ImGuiStyle &style = ImGui::GetStyle();
         style.Alpha = 1.0f;
@@ -171,14 +189,12 @@ namespace Dvimana {
         style.Colors[ImGuiCol_PlotHistogram]        = ImVec4(0.90f, 0.70f, 0.00f, 1.00f);
         style.Colors[ImGuiCol_PlotHistogramHovered] = ImVec4(1.00f, 0.60f, 0.00f, 1.00f);
         style.Colors[ImGuiCol_TextSelectedBg]       = ImVec4(0.26f, 0.59f, 0.98f, 0.35f);
+
         ImGuiIO &io = ImGui::GetIO();
-        if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable){
+        if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
+        {
             style.WindowRounding = 10.0f;
             style.Colors[ImGuiCol_WindowBg].w = 1.0f;
         }
-    }
-
-    
-
-    
+    }  
 }

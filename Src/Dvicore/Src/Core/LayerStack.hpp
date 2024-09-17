@@ -4,8 +4,10 @@
 #include <vector>
 #include "Layer.hpp"
 
-namespace Dvimana {
-    class LayerStack {
+namespace DviCore 
+{
+    class LayerStack 
+    {
         public:
             LayerStack() = default;
             ~LayerStack();

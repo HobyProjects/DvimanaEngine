@@ -5,7 +5,7 @@
 #include "MouseEvent.hpp"
 #include "Window.hpp"
 
-namespace Dvimana {
+namespace DviCore {
     class EventReceiver {
         private:
             EventReceiver() = default;

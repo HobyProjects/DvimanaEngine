@@ -3,9 +3,10 @@
 #include "KeyCodes.hpp"
 #include "Event.hpp"
 
-namespace Dvimana {
-	class KeyboardKeyPressEvent : public Event {
-
+namespace DviCore 
+{
+	class KeyboardKeyPressEvent : public Event 
+	{
 		public:
 			KeyboardKeyPressEvent(KeyCodes key) : m_Key(key) {}
 			virtual ~KeyboardKeyPressEvent() = default;
@@ -18,8 +19,8 @@ namespace Dvimana {
 			KeyCodes m_Key{ 0 };
 	};
 
-	class KeyboardKeyReleaseEvent : public Event {
-
+	class KeyboardKeyReleaseEvent : public Event 
+	{
 		public:
 			KeyboardKeyReleaseEvent(KeyCodes key) : m_Key(key) {}
 			virtual ~KeyboardKeyReleaseEvent() = default;
@@ -32,8 +33,8 @@ namespace Dvimana {
 			KeyCodes m_Key{ 0 };
 	};
 
-	class KeyboardKeyRepeateEvent : public Event {
-
+	class KeyboardKeyRepeateEvent : public Event 
+	{
 		public:
 			KeyboardKeyRepeateEvent(KeyCodes key) : m_Key(key) {}
 			virtual ~KeyboardKeyRepeateEvent() = default;
@@ -46,8 +47,8 @@ namespace Dvimana {
 			KeyCodes m_Key{ 0 };
 	};
 
-	class KeyboardCharInputEvent : public Event {
-		
+	class KeyboardCharInputEvent : public Event 
+	{	
 		public:
 			KeyboardCharInputEvent(uint32_t codepoint) : m_Codepoint(codepoint) {}
 			virtual ~KeyboardCharInputEvent() = default;

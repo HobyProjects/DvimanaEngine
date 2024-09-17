@@ -3,7 +3,7 @@
 #include <ImGuiDocking/imgui.h>
 #include "Window.hpp"
 
-namespace Dvimana {
+namespace DviCore {
     inline ImGuiKey GetImGuiKeyCode(int key){
         switch (key){
             case GLFW_KEY_TAB:

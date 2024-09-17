@@ -1,16 +1,20 @@
 #pragma once
 
-#include "OpenGL.hpp"
+#include <string>
+#include <memory>
+#include "GL_Context.hpp"
 
-namespace Dvimana {
-    
-    enum class WindowState {
+namespace DviCore 
+{
+    enum class WindowState 
+    {
         Minimized,
         Maximized,
         Normal
     };
 
-    struct WindowSpecification {
+    struct WindowSpecification 
+    {
         std::string Title{std::string()};
         uint32_t Width{0};
         uint32_t Height{0};
@@ -39,15 +43,16 @@ namespace Dvimana {
         int32_t FramebufferHeight{0};
     };
 
-    class Window {
+    class Window 
+    {
         public:
             Window(const std::string& title = "Dvimana Engine");
             ~Window();
 
             GLFWwindow* GetNativeWindow() const { return m_Window; }
-            WindowSpecification& GetSpecification() { return m_Specification; }
-            std::shared_ptr<OpenGLContext> GetContext() const { return m_Context; }
-            void SwapBuffers() { m_Context->SwapBuffers(); }
+            WindowSpecification& GetWindowSpecification() { return m_Specification; }
+            std::shared_ptr<OpenGLContext> GetOpenGLContext() const { return m_Context; }
+            void SwapBuffers();
 
         private:
             GLFWwindow* m_Window{nullptr};

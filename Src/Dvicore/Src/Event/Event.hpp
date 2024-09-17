@@ -6,16 +6,18 @@
 
 #include "Log.hpp"
 
-
-namespace Dvimana {
-	enum class EventCategory {
+namespace DviCore 
+{
+	enum class EventCategory 
+	{
 		Application,
 		Keyboard,
 		Mouse,
 		Unknown
 	};
 
-	enum class EventType {
+	enum class EventType 
+	{
 		WindowResize,
 		WindowClose,
 		WindowPosChange,
@@ -44,7 +46,8 @@ namespace Dvimana {
 
 	#define EVENT_CLASS_CATEGORY(category) virtual EventCategory GetCategory() const override { return category; }
 
-	class Event {
+	class Event 
+	{
 		public:
 			Event() = default;
 			virtual ~Event() = default;
@@ -54,7 +57,8 @@ namespace Dvimana {
 			virtual const char* GetName() const = 0;
 			virtual std::string ToString() const { return GetName(); }
 
-			bool CategoryEquals(EventCategory category) const {
+			bool CategoryEquals(EventCategory category) const 
+			{
 				return GetCategory() == category;
 			}
 
@@ -62,17 +66,21 @@ namespace Dvimana {
 			bool Handled{ false };
 	};
 
-	class EventHandler {	
+	class EventHandler 
+	{	
 		public:
 			EventHandler(Event& event) : 
 				m_Event(event) {}
 
 			template<typename T, typename Function>
-			bool Dispatch(const Function& function) {
-				if (m_Event.GetEventType() == T::GetStaticType()) {
+			bool Dispatch(const Function& function) 
+			{
+				if (m_Event.GetEventType() == T::GetStaticType()) 
+				{
 					m_Event.Handled |= function(static_cast<T&>(m_Event));
 					return true;
 				}
+				
 				return false;
 			}
 

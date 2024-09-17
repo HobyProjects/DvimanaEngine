@@ -2,12 +2,14 @@
 #include <spdlog/sinks/stdout_color_sinks.h>
 #include <spdlog/sinks/basic_file_sink.h>
 
-namespace Dvimana {
-    
+namespace DviCore 
+{
+    static bool s_Initialized{false};
     static std::shared_ptr<spdlog::logger> s_CoreLogger{nullptr};
     static std::shared_ptr<spdlog::logger> s_ClientLogger{nullptr};
 
-	bool Log::Init() {
+	void Log::Init() 
+    {
         std::vector<spdlog::sink_ptr> log_skin{};
         log_skin.emplace_back(std::make_shared<spdlog::sinks::stdout_color_sink_mt>());
         log_skin.emplace_back(std::make_shared<spdlog::sinks::basic_file_sink_mt>("Dvimana.log", true));
@@ -23,14 +25,20 @@ namespace Dvimana {
         spdlog::register_logger(s_ClientLogger);
         s_ClientLogger->set_level(spdlog::level::trace);
         s_ClientLogger->flush_on(spdlog::level::trace);
-		return true;
+        s_Initialized = true;
 	}
 
 	std::shared_ptr<spdlog::logger>& Log::GetCoreLogger() {
+        if(!s_Initialized)
+            Init();
+
 		return s_CoreLogger;
 	}
 
 	std::shared_ptr<spdlog::logger>& Log::GetClientLogger() {
+        if(!s_Initialized)
+            Init();
+            
 		return s_ClientLogger;
 	}
 }

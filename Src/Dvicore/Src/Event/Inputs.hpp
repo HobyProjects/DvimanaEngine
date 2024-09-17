@@ -1,10 +1,14 @@
 #pragma once
 
+#include <glm/glm.hpp>
+
 #include "Window.hpp"
 #include "KeyCodes.hpp"
 
-namespace Dvimana {
-    class InputHandler {
+namespace DviCore 
+{
+    class InputHandler 
+    {
         public:
             static void TargetWindow(const std::shared_ptr<Window>& window);
             static bool KeyPressed(KeyCodes key);

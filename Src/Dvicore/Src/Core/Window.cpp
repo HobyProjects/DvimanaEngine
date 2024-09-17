@@ -1,8 +1,13 @@
 #include "Window.hpp"
+#include "Log.hpp"
+#include "Assert.hpp"
 
-namespace Dvimana {
-    Window::Window(const std::string & title){
+namespace DviCore 
+{
+    Window::Window(const std::string & title)
+    {
         Log::Init();
+
         if(!glfwInit()) {
             DVI_CORE_CRITICAL("Failed to initialize GLFW");
             return;
@@ -10,7 +15,8 @@ namespace Dvimana {
 
         DVI_CORE_INFO("GLFW initialized");
         const GLFWvidmode* mode = glfwGetVideoMode(glfwGetPrimaryMonitor());
-        if(mode != nullptr){
+        if(mode != nullptr)
+        {
             m_Specification.Width               = mode->width;
             m_Specification.Height              = mode->height;
             m_Specification.FixedWidth          = mode->width;
@@ -23,7 +29,8 @@ namespace Dvimana {
             m_Specification.AlphaColorBits      = 8;
             m_Specification.RefreshRate         = mode->refreshRate;
         }
-        else {
+        else 
+        {
             DVI_CORE_WARN("Failed to get primary monitor video mode");;
             m_Specification.Width           = 1280;
             m_Specification.Height          = 720;
@@ -43,7 +50,7 @@ namespace Dvimana {
         glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE);
         glfwWindowHint(GLFW_CLIENT_API, GLFW_OPENGL_API);
         glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
-        glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 4);
+        glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
         glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
         glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GLFW_TRUE);
         glfwWindowHint(GLFW_DOUBLEBUFFER, GLFW_TRUE);
@@ -57,7 +64,8 @@ namespace Dvimana {
         glfwWindowHint(GLFW_STENCIL_BITS, 8);
 
         m_Window = glfwCreateWindow(m_Specification.Width, m_Specification.Height, title.c_str(), nullptr, nullptr);
-        if(m_Window != nullptr){
+        if(m_Window != nullptr)
+        {
             DVI_CORE_INFO("GLFW window created");
             glfwSetWindowSizeLimits(m_Window, m_Specification.MinWidth, m_Specification.MinHeight, GLFW_DONT_CARE, GLFW_DONT_CARE);
             glfwGetFramebufferSize(m_Window, &m_Specification.FramebufferWidth, &m_Specification.FramebufferHeight);
@@ -75,10 +83,17 @@ namespace Dvimana {
         glfwTerminate();
     }
 
-    Window::~Window(){
+    Window::~Window()
+    {
         if(m_Window != nullptr)
             glfwDestroyWindow(m_Window);
 
         glfwTerminate();
+    }
+
+    void Window::SwapBuffers()
+    {
+        if(m_Specification.IsActive && m_Specification.IsVSyncEnabled)
+            m_Context->SwapBuffers();
     }
 }

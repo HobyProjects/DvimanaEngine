@@ -6,10 +6,10 @@
 #undef APIENTRY
 #endif
 
-namespace Dvimana {
-
-    enum KeyCodes : int32_t {
-
+namespace DviCore 
+{
+    enum KeyCodes : int32_t 
+    {
 		KEY_NUM_0 = GLFW_KEY_0,
 		KEY_NUM_1 = GLFW_KEY_1,
 		KEY_NUM_2 = GLFW_KEY_2,
@@ -129,14 +129,30 @@ namespace Dvimana {
 
 	};
 
-    enum MouseButton : uint32_t {
+    enum KeyState : uint32_t 
+    {
+        KEY_PRESSED     = GLFW_PRESS,
+        KEY_RELEASED    = GLFW_RELEASE,
+        KEY_REPEAT      = GLFW_REPEAT
+    };
+
+    enum MouseButton : uint32_t 
+    {
         MOUSE_BUTTON_LEFT   = GLFW_MOUSE_BUTTON_LEFT,
         MOUSE_BUTTON_RIGHT  = GLFW_MOUSE_BUTTON_RIGHT,
         MOUSE_BUTTON_MIDDLE = GLFW_MOUSE_BUTTON_MIDDLE
     };
 
-    inline KeyCodes GetKeyCode(int key){
-        switch(key) {
+    enum MouseButtonState : uint32_t
+    {
+        MOUSE_BUTTON_PRESSED     = GLFW_PRESS,
+        MOUSE_BUTTON_RELEASED    = GLFW_RELEASE
+    };
+
+    inline KeyCodes GetKeyCode(int key)
+    {
+        switch(key) 
+        {
             case GLFW_KEY_A: return KEY_A;
             case GLFW_KEY_B: return KEY_B;
             case GLFW_KEY_C: return KEY_C;

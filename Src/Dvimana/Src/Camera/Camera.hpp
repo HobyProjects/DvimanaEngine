@@ -4,42 +4,45 @@
 
 namespace Dvimana {
 
-	struct CameraBounds {
-		CameraBounds(float left, float right, float top, float bottom) : left(left), right(right), top(top), bottom(bottom) {};
+	struct CameraBounds 
+	{
+		float Left{ 0.0f }, Right{ 0.0f }, Top{ 0.0f }, Bottom{ 0.0f };
+
+		CameraBounds(float left, float right, float top, float bottom) : Left(left), Right(right), Top(top), Bottom(bottom) {};
 		~CameraBounds() = default;
 
-		float left{ 0.0f }, right{ 0.0f }, top{ 0.0f }, bottom{ 0.0f };
-
-		float Width() const { return right - left; }
-		float Height() const { return bottom - top; }
+		float Width() const { return Right - Left; }
+		float Height() const { return Bottom - Top; }
 	};
 
-	class CameraController {
+	class CameraController 
+	{
 		public:
-			CameraController(float aspectRatio, bool rotation);
+			CameraController(float aspectRatio, bool rotationEnabled = false);
 			~CameraController() = default;
 
-			void OnUpdate(TimeSteps timeSteps);
-			void OnEvent(Event& e);
+			void OnUpdate(DviCore::TimeSteps timeSteps);
+			void OnEvent(DviCore::Event& e);
 			void OnWindowResize(uint32_t width, uint32_t height);
 
 			glm::mat4 GetViewProjection() const { m_Camera.ViewProjectionMatrix();}
-			const Camera2D& GetCamera() const { return m_Camera; }
+			const DviCore::Camera2D& GetCamera() const { return m_Camera; }
 			const CameraBounds& GetBounds() const { return m_Bounds; }
 			const glm::vec3& GetCameraPosition() const { return m_CameraPosition; }
-			void SetRotation(bool rotation) { m_RotationEnabled = rotation; }
+			float GetCameraRotation() const { return m_CameraRotation; }
+			void SetRotation(bool rotation) { m_CameraRotation = rotation; }
 			void SetZoomLevel(float zoomLevel) { m_ZoomLevel = zoomLevel; }
 		
 		private:
 			void CalculateView();
-			bool OnMouseWheelEvent(MouseWheelEvent& e);
-			bool OnWindowResizeEvent(WindowResizeEvent& e);
+			bool OnMouseWheelEvent(DviCore::MouseWheelEvent& e);
+			bool OnWindowResizeEvent(DviCore::WindowResizeEvent& e);
 
 		private:
 			float m_AspectRatio{0.0f};
 			float m_ZoomLevel{1.0f};
 			bool m_RotationEnabled{0.0f};
-			Camera2D m_Camera;
+			DviCore::Camera2D m_Camera;
 			CameraBounds m_Bounds;
 
 			glm::vec3 m_CameraPosition{ 0.0f, 0.0f, 0.0f };
@@ -48,11 +51,13 @@ namespace Dvimana {
 			float m_CameraRotationSpeed{10.0f};
 	};
 
-	class SceneCamera : public Camera {
+	class SceneCamera : public DviCore::Camera 
+	{
 		public:
-			enum class ProjectionType {
-				Orthographic = 0,
-				Perspective = 1
+			enum class ProjectionType 
+			{
+				Orthographic 	= 0,
+				Perspective 	= 1
 			};
 		
 		private:
@@ -82,8 +87,8 @@ namespace Dvimana {
 			void SetPerspectiveFarClip(float farClip) { m_PerspectiveFar = farClip; CalculateProjection(); }
 
 			void SetViewportSize(uint32_t width, uint32_t height);
-			void SetOrthographic(float size, float nearClip, float farClip);
-			void SetPerspective(float fov, float nearClip, float farClip);
+			void SetOrthographic(float size = 10.0f, float nearClip = -1.0f, float farClip = 1.0f);
+			void SetPerspective(float fov = 45.0f, float nearClip = 0.01f, float farClip = 1000.0f);
 
 		private:
 			ProjectionType m_ProjectionType{ProjectionType::Orthographic};

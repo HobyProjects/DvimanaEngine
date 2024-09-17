@@ -1,66 +1,77 @@
 #include "Camera.hpp"
 
-namespace Dvimana {
-    CameraController::CameraController(float aspectRatio, bool rotation):
-        m_AspectRatio(aspectRatio), m_RotationEnabled(rotation),
+namespace Dvimana 
+{
+    CameraController::CameraController(float aspectRatio, bool rotationEnabled):
+        m_AspectRatio(aspectRatio), m_RotationEnabled(rotationEnabled),
         m_Bounds(-aspectRatio * m_ZoomLevel, aspectRatio * m_ZoomLevel, -m_ZoomLevel, m_ZoomLevel),
         m_Camera(-aspectRatio * m_ZoomLevel, aspectRatio * m_ZoomLevel, -m_ZoomLevel, m_ZoomLevel)
     {
     }
-    void CameraController::OnUpdate(TimeSteps timeSteps){
-        if(InputHandler::KeyPressed(KEY_W))
+
+    void CameraController::OnUpdate(DviCore::TimeSteps timeSteps)
+    {
+        if(DviCore::InputHandler::KeyPressed(DviCore::KEY_W))
             m_CameraPosition.y += m_CameraTranslationSpeed * timeSteps;
-        if(InputHandler::KeyPressed(KEY_S))
+        if(DviCore::InputHandler::KeyPressed(DviCore::KEY_S))
             m_CameraPosition.y -= m_CameraTranslationSpeed * timeSteps;
-        if(InputHandler::KeyPressed(KEY_A))
+        if(DviCore::InputHandler::KeyPressed(DviCore::KEY_A))
             m_CameraPosition.x -= m_CameraTranslationSpeed * timeSteps;
-        if(InputHandler::KeyPressed(KEY_D))
+        if(DviCore::InputHandler::KeyPressed(DviCore::KEY_D))
             m_CameraPosition.x += m_CameraTranslationSpeed * timeSteps;
 
         m_Camera.SetPosition(m_CameraPosition);
 
-        if(m_RotationEnabled){
-            if(InputHandler::KeyPressed(KEY_Q))
+        if(m_RotationEnabled)
+        {
+            if(DviCore::InputHandler::KeyPressed(DviCore::KEY_Q))
                 m_CameraRotation += m_CameraRotationSpeed * timeSteps;
-            if(InputHandler::KeyPressed(KEY_E))
+            if(DviCore::InputHandler::KeyPressed(DviCore::KEY_E))
                 m_CameraRotation -= m_CameraRotationSpeed * timeSteps;
+                
             m_Camera.SetRotation(m_CameraRotation);
         }
 
-        m_CameraTranslationSpeed = 100.0f;
+        m_CameraTranslationSpeed = m_ZoomLevel;
     }
 
-    void CameraController::OnEvent(Event & e){
-        EventHandler handler(e);
-        handler.Dispatch<MouseWheelEvent>(DVI_CALLBACK(CameraController::OnMouseWheelEvent));
-        handler.Dispatch<WindowResizeEvent>(DVI_CALLBACK(CameraController::OnWindowResizeEvent));
+    void CameraController::OnEvent(DviCore::Event & e)
+    {
+        DviCore::EventHandler handler(e);
+        handler.Dispatch<DviCore::MouseWheelEvent>(DVI_CALLBACK(CameraController::OnMouseWheelEvent));
+        handler.Dispatch<DviCore::WindowResizeEvent>(DVI_CALLBACK(CameraController::OnWindowResizeEvent));
     }
 
-    void CameraController::OnWindowResize(uint32_t width, uint32_t height){
+    void CameraController::OnWindowResize(uint32_t width, uint32_t height)
+    {
         m_AspectRatio = (float)width / (float)height;
         CalculateView();
     }
 
-    void CameraController::CalculateView(){
+    void CameraController::CalculateView()
+    {
         m_Bounds = { -m_AspectRatio * m_ZoomLevel, m_AspectRatio * m_ZoomLevel, -m_ZoomLevel, m_ZoomLevel };
-        m_Camera.SetProjection(m_Bounds.left, m_Bounds.right,  m_Bounds.bottom, m_Bounds.top);
+        m_Camera.SetProjection(m_Bounds.Left, m_Bounds.Right,  m_Bounds.Bottom, m_Bounds.Top);
     }
 
-    bool CameraController::OnMouseWheelEvent(MouseWheelEvent & e){
+    bool CameraController::OnMouseWheelEvent(DviCore::MouseWheelEvent & e)
+    {
         m_ZoomLevel -= e.GetYOffset();
         m_ZoomLevel = std::max(m_ZoomLevel, 0.25f);
         return false;
     }
 
-    bool CameraController::OnWindowResizeEvent(WindowResizeEvent & e){
+    bool CameraController::OnWindowResizeEvent(DviCore::WindowResizeEvent & e)
+    {
         OnWindowResize(e.GetWidth(), e.GetHeight());
         return false;
     }
 
     
-
-    void SceneCamera::CalculateProjection(){
-        switch(m_ProjectionType){
+    void SceneCamera::CalculateProjection()
+    {
+        switch(m_ProjectionType)
+        {
             case ProjectionType::Perspective:
             {
                 m_Projection = glm::perspective(m_PerspectiveFov, m_AspectRatio, m_PerspectiveNear, m_PerspectiveFar);
@@ -82,16 +93,19 @@ namespace Dvimana {
         };
     }
 
-    SceneCamera::SceneCamera(){
+    SceneCamera::SceneCamera()
+    {
         CalculateProjection();
     }
 
-    void SceneCamera::SetViewportSize(uint32_t width, uint32_t height){
+    void SceneCamera::SetViewportSize(uint32_t width, uint32_t height)
+    {
         m_AspectRatio = (float)width / (float)height;
         CalculateProjection();
     }
 
-    void SceneCamera::SetOrthographic(float size, float nearClip, float farClip){
+    void SceneCamera::SetOrthographic(float size, float nearClip, float farClip)
+    {
         m_ProjectionType        = ProjectionType::Orthographic;
         m_OrthographicSize      = size;
         m_OrthographicNear      = nearClip;
@@ -99,7 +113,8 @@ namespace Dvimana {
         CalculateProjection();
     }
 
-    void SceneCamera::SetPerspective(float fov, float nearClip, float farClip){
+    void SceneCamera::SetPerspective(float fov, float nearClip, float farClip)
+    {
         m_ProjectionType    = ProjectionType::Perspective;
         m_PerspectiveFov    = fov;
         m_PerspectiveNear   = nearClip;

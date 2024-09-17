@@ -2,10 +2,10 @@
 
 #include "Event.hpp"
 
-namespace Dvimana {
-
-    class WindowResizeEvent : public Event {
-
+namespace DviCore 
+{
+    class WindowResizeEvent : public Event 
+    {
         public:
             WindowResizeEvent(uint32_t width, uint32_t height) : m_Width(width), m_Height(height) {}
             virtual ~WindowResizeEvent() = default;
@@ -20,8 +20,8 @@ namespace Dvimana {
             uint32_t m_Height{ 0 };
     };
 
-    class WindowFrameResizeEvent : public Event {
-
+    class WindowFrameResizeEvent : public Event 
+    {
         public:
             WindowFrameResizeEvent(uint32_t width, uint32_t height) : m_Width(width), m_Height(height) {}
             virtual ~WindowFrameResizeEvent() = default;
@@ -36,8 +36,8 @@ namespace Dvimana {
             uint32_t m_Height{ 0 };
     };
 
-    class WindowCloseEvent : public Event {
-
+    class WindowCloseEvent : public Event 
+    {
         public:
             WindowCloseEvent() = default;
             virtual ~WindowCloseEvent() = default;
@@ -46,8 +46,8 @@ namespace Dvimana {
             EVENT_CLASS_CATEGORY(EventCategory::Application);
     };
 
-    class WindowPosChangeEvent : public Event {
-        
+    class WindowPosChangeEvent : public Event 
+    {       
         public:
             WindowPosChangeEvent(int32_t x, int32_t y) : m_X(x), m_Y(y) {}
             virtual ~WindowPosChangeEvent() = default;
@@ -62,8 +62,8 @@ namespace Dvimana {
             int32_t m_Y{ 0 };
     };
 
-    class WindowMinimizeEvent : public Event {
-
+    class WindowMinimizeEvent : public Event 
+    {
         public:
             WindowMinimizeEvent() = default;
             virtual ~WindowMinimizeEvent() = default;
@@ -72,8 +72,8 @@ namespace Dvimana {
             EVENT_CLASS_CATEGORY(EventCategory::Application);
     };
 
-    class WindowMaximizeEvent : public Event {
-
+    class WindowMaximizeEvent : public Event 
+    {
         public:
             WindowMaximizeEvent() = default;
             virtual ~WindowMaximizeEvent() = default;
@@ -82,8 +82,8 @@ namespace Dvimana {
             EVENT_CLASS_CATEGORY(EventCategory::Application);
     };
 
-    class WindowFocusLostEvent : public Event {
-
+    class WindowFocusLostEvent : public Event 
+    {
         public:
             WindowFocusLostEvent() = default;
             virtual ~WindowFocusLostEvent() = default;
@@ -92,8 +92,8 @@ namespace Dvimana {
             EVENT_CLASS_CATEGORY(EventCategory::Application);
     };
 
-    class WindowFocusGainedEvent : public Event {
-
+    class WindowFocusGainedEvent : public Event 
+    {
         public:
             WindowFocusGainedEvent() = default;
             virtual ~WindowFocusGainedEvent() = default;
@@ -101,7 +101,4 @@ namespace Dvimana {
             EVENT_CLASS_TYPE(EventType::WindowFocusGain);
             EVENT_CLASS_CATEGORY(EventCategory::Application);
     };
-
-
-
 }

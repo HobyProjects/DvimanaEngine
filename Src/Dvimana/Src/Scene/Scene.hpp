@@ -3,17 +3,18 @@
 #include <DviCore/DviCore.hpp>
 #include <entt/entt.hpp>
 
-namespace Dvimana {
-
+namespace Dvimana 
+{
     class Entity;
     class ScenePanels;
 
-    class Scene{
+    class Scene
+    {
         public:
             Scene() = default;
             ~Scene() = default;
 
-            void OnUpdate(TimeSteps deltaTime);
+            void OnUpdate(DviCore::TimeSteps deltaTime);
             void OnWindowResize(uint32_t width, uint32_t height);
             Entity CreateEntity(const std::string& name);
 
@@ -25,31 +26,36 @@ namespace Dvimana {
             friend class Entity;
     };
 
-    class Entity {
+    class Entity 
+    {
         public:
             Entity() = default;
             Entity(entt::entity handle, Scene* scene);
             ~Entity() = default;
 
             template<typename T>
-            bool HasComponent() const {
+            bool HasComponent() const 
+            {
                 return m_Scene->m_Registry.any_of<T>(m_EntityHandle);
             }
 
             template<typename T, typename... Args>
-            T& AddComponent(Args&&... args) {
+            T& AddComponent(Args&&... args) 
+            {
                 DVIMANA_ASSERT(!HasComponent<T>(), "Entity already has component!");
                 return m_Scene->m_Registry.emplace<T>(m_EntityHandle, std::forward<Args>(args)...);
             }
 
             template<typename T>
-            T& GetComponent() const {
+            T& GetComponent() const 
+            {
                 DVIMANA_ASSERT(HasComponent<T>(), "Entity does not have component!");
                 return m_Scene->m_Registry.get<T>(m_EntityHandle);
             }
 
             template<typename T>
-            void RemoveComponent() {
+            void RemoveComponent() 
+            {
                 DVIMANA_ASSERT(HasComponent<T>(), "Entity does not have component!");
                 m_Scene->m_Registry.remove<T>(m_EntityHandle);
             }
@@ -57,11 +63,13 @@ namespace Dvimana {
             operator bool() const { return m_EntityHandle != entt::null; }
             operator uint32_t() const { return (uint32_t)m_EntityHandle; }
 
-            bool operator==(const Entity& other) const {
+            bool operator==(const Entity& other) const 
+            {
                 return m_EntityHandle == other.m_EntityHandle && m_Scene == other.m_Scene;
             }
 
-            bool operator!=(const Entity& other) const {
+            bool operator!=(const Entity& other) const 
+            {
                 return !(*this == other);
             }
 
@@ -70,19 +78,21 @@ namespace Dvimana {
             Scene* m_Scene{nullptr};
     };
 
-    class ScriptableEntity {
+    class ScriptableEntity 
+    {
         public:
             ScriptableEntity() = default;
             virtual ~ScriptableEntity() = default;
 
             template<typename T>
-            T& GetComponent() {
+            T& GetComponent() 
+            {
                 return m_Entity.GetComponent<T>();
             }
 
         protected:
             virtual void OnCreate() {} 
-            virtual void OnUpdate(TimeSteps deltaTime) {}
+            virtual void OnUpdate(DviCore::TimeSteps deltaTime) {}
             virtual void OnDestroy() {}
 
         private:
@@ -90,7 +100,8 @@ namespace Dvimana {
             friend class Scene;
     };
 
-    class ScenePanels {
+    class ScenePanels 
+    {
         public:
             ScenePanels() = default;
             ScenePanels(const std::shared_ptr<Scene>& scene);

@@ -12,14 +12,16 @@
 #include "MouseEvent.hpp"
 #include "TimeSteps.hpp"
 
-namespace Dvimana {
-
-    enum class ImGuiColorScheme {
+namespace DviCore 
+{
+    enum class ImGuiColorScheme 
+    {
         Light,
         Dark,
     };
 
-    class ImGuiLayer final : public Layer {
+    class ImGuiLayer final : public Layer 
+    {
         public:
             ImGuiLayer() : Layer("ImGuiLayer") {}
             ImGuiLayer(std::shared_ptr<Window> window, ImGuiColorScheme colorScheme = ImGuiColorScheme::Dark);

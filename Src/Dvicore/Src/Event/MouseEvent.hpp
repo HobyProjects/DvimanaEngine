@@ -2,9 +2,10 @@
 
 #include "Event.hpp"
 
-namespace Dvimana {
-
-    class MouseButtonPressEvent : public Event {
+namespace DviCore 
+{
+    class MouseButtonPressEvent : public Event 
+    {
         public:
             MouseButtonPressEvent(int32_t button) : m_button(button) {}
             virtual ~MouseButtonPressEvent() = default;
@@ -18,7 +19,8 @@ namespace Dvimana {
             int32_t m_button{0};
     };
 
-    class MouseButtonReleaseEvent : public Event {
+    class MouseButtonReleaseEvent : public Event 
+    {
         public:
             MouseButtonReleaseEvent(int32_t button) : m_button(button) {}
             virtual ~MouseButtonReleaseEvent() = default;
@@ -32,7 +34,8 @@ namespace Dvimana {
             int32_t m_button{0};
     };
 
-    class MouseWheelEvent : public Event {
+    class MouseWheelEvent : public Event 
+    {
         public:
             MouseWheelEvent(double xoffset, double yoffset) : m_xoffset(xoffset), m_yoffset(yoffset) {}
             virtual ~MouseWheelEvent() = default;
@@ -47,7 +50,8 @@ namespace Dvimana {
             double m_xoffset{0}, m_yoffset{0};
     };
 
-    class CursorPosChangeEvent : public Event {
+    class CursorPosChangeEvent : public Event 
+    {
         public:
             CursorPosChangeEvent(double xpos, double ypos) : m_xpos(xpos), m_ypos(ypos) {}
             virtual ~CursorPosChangeEvent() = default;
@@ -62,7 +66,8 @@ namespace Dvimana {
             double m_xpos{0}, m_ypos{0};
     };
 
-    class CursorEnterEvent : public Event {
+    class CursorEnterEvent : public Event 
+    {
         public:
             CursorEnterEvent() = default;
             virtual ~CursorEnterEvent() = default;
@@ -71,7 +76,8 @@ namespace Dvimana {
             EVENT_CLASS_CATEGORY(EventCategory::Mouse);
     };
 
-    class CursorLeaveEvent : public Event {
+    class CursorLeaveEvent : public Event 
+    {
         public:
             CursorLeaveEvent() = default;
             virtual ~CursorLeaveEvent() = default;

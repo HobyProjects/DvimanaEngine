@@ -1,7 +1,9 @@
 #pragma once
 
-namespace Dvimana {
-    class TimeSteps {
+namespace DviCore 
+{
+    class TimeSteps 
+    {
         public:
             TimeSteps(float deltaTime) : m_DeltaTime(deltaTime) {}
             ~TimeSteps() = default;

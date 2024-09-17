@@ -1,11 +1,14 @@
 #pragma once 
 
 #include <string>
+
 #include "Event.hpp"
 #include "TimeSteps.hpp"
 
-namespace Dvimana {
-    class Layer {
+namespace DviCore 
+{
+    class Layer 
+    {
         public:
             Layer(const std::string& name): m_Name(name) {}
             virtual ~Layer() = default;
