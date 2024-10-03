@@ -7,6 +7,7 @@ namespace Dvimana
 {
     class Entity;
     class ScenePanels;
+    class Serializer;
 
     class Scene
     {
@@ -16,14 +17,17 @@ namespace Dvimana
 
             void OnUpdate(DviCore::TimeSteps deltaTime);
             void OnWindowResize(uint32_t width, uint32_t height);
+
             Entity CreateEntity(const std::string& name);
+            void DestroyEntity(Entity entity);
 
         private:
             entt::registry m_Registry;
             uint32_t m_ViewportWidth = 0, m_ViewportHeight = 0;
 
+            friend class Entity; 
             friend class ScenePanels;
-            friend class Entity;
+            friend class Serializer;
     };
 
     class Entity 
@@ -62,6 +66,7 @@ namespace Dvimana
 
             operator bool() const { return m_EntityHandle != entt::null; }
             operator uint32_t() const { return (uint32_t)m_EntityHandle; }
+            operator entt::entity() const { return m_EntityHandle; }
 
             bool operator==(const Entity& other) const 
             {

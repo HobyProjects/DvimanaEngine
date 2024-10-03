@@ -2,6 +2,7 @@ cmake_minimum_required(VERSION 3.15)
 project(Dvimana VERSION 1.0.0 LANGUAGES C CXX)
 
 find_package(DviCore REQUIRED)
+find_package(yaml-cpp REQUIRED)
 set(DVIMANA_APPLICATION Dvimana)
 
 set(
@@ -10,6 +11,7 @@ set(
         Src/Editor/EditorLayer.hpp
         Src/Camera/Camera.hpp
         Src/Scene/Scene.hpp
+        Src/Scene/Serializer.hpp
         Src/Scene/Components.hpp
 )
 
@@ -20,6 +22,7 @@ set(
         Src/EntryPoint/Dvimana.cpp
         Src/Camera/Camera.cpp
         Src/Scene/Scene.cpp
+        Src/Scene/Serializer.cpp
 )
 
 add_executable(${DVIMANA_APPLICATION} ${DVIMANA_APP_HEADERS} ${DVIMANA_APP_SOURCES})
@@ -34,4 +37,4 @@ target_include_directories(
             Src/Scene
 )
 
-target_link_libraries(${DVIMANA_APPLICATION} PRIVATE Dvimana::DviCore)
+target_link_libraries(${DVIMANA_APPLICATION} PRIVATE Dvimana::DviCore yaml-cpp::yaml-cpp)

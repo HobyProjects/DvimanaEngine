@@ -11,6 +11,7 @@ find_package(spdlog REQUIRED)
 find_package(EnTT REQUIRED)
 find_package(ImGuiDocking REQUIRED)
 find_package(StbImage REQUIRED)
+find_package(yaml-cpp REQUIRED)
 
 set(DVIMANA_CORE DviCore)
 set(DVICORE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/Src)
@@ -97,6 +98,7 @@ target_link_libraries(
 			EnTT::EnTT
 			ImGui::ImGuiDocking
 			Stb::StbImage
+			yaml-cpp::yaml-cpp
 )
 
 add_library(Dvimana::DviCore ALIAS ${DVIMANA_CORE})

@@ -5,6 +5,7 @@
 #include "Scene.hpp"
 #include "Components.hpp"
 #include "Camera.hpp"
+#include "Serializer.hpp"
 
 namespace Dvimana 
 {

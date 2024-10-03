@@ -57,6 +57,8 @@ namespace Dvimana
 
         m_CameraEntity.AddComponent<NativeScriptComponent>().Bind<ScriptableCameraController>();
         m_ScenePanels.SetContext(m_Scene);
+        Serializer serializer(m_Scene);
+        serializer.Serialize("Scene.yaml");
     }
 
     void EditorLayer::OnDetach()
@@ -71,7 +73,7 @@ namespace Dvimana
             m_Framebuffer->ResizeFrame((uint32_t)m_ViewportSize.x, (uint32_t)m_ViewportSize.y);
 
         m_Framebuffer->Bind();
-        DviCore::Renderer::ClearColor({0.1f, 0.1f, 0.1f, 1.0f});
+        DviCore::Renderer::ClearColor({0.243, 0.243, 0.243, 1.0f});
         DviCore::Renderer::Clear();
         DviCore::BatchRenderer::StatusReset();
         m_Scene->OnUpdate(deltaTime);

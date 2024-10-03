@@ -248,7 +248,8 @@ if __name__ == "__main__":
         ProjectlLibs("glm", "Vendors/glm", "build/config/glm", "build/packages/glm", ""),
         ProjectlLibs("entt", "Vendors/entt", "build/config/entt", "build/packages/entt", ""),
         ProjectlLibs("ImGuiDocking", "Vendors/imgui_docking", "build/config/ImGuiDocking", "build/packages/ImGuiDocking", ""),
-        ProjectlLibs("StbImage", "Vendors/stb_image", "build/config/StbImage", "build/packages/StbImage", "")
+        ProjectlLibs("StbImage", "Vendors/stb_image", "build/config/StbImage", "build/packages/StbImage", ""),
+        ProjectlLibs("yaml", "Vendors/yaml-cpp", "build/config/yaml", "build/packages/yaml", "-DYAML_BUILD_SHARED_LIBS=OFF")
     ]
 
     for external_module in PROJECT_LIBS:
